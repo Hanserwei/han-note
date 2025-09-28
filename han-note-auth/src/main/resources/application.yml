@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: han-note-auth
+  profiles:
+    active: dev # 默认激活 dev 本地开发环境
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver # 指定数据库驱动类
+    # 数据库连接信息
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username} # 数据库用户名
+    password: ${spring.datasource.password} # 数据库密码
+server:
+  port: 8080 # 项目启动的端口
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+  mapper-locations: classpath*:/mapperxml/*.xml
+logging:
+  level:
+    com.hanserwei.hannote.auth.domain.mapper: debug
