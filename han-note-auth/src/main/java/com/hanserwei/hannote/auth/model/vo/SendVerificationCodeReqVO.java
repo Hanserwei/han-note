@@ -1,5 +1,6 @@
 package com.hanserwei.hannote.auth.model.vo;
 
+import com.hanserwei.framework.common.validate.EmailNumber;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class SendVerificationCodeReqVO {
 
     @NotBlank(message = "邮箱不能为空")
+    @EmailNumber
     private String email;
 
 }
