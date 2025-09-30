@@ -2,7 +2,7 @@ package com.hanserwei.hannote.auth.controller;
 
 import com.hanserwei.framework.biz.operationlog.aspect.ApiOperationLog;
 import com.hanserwei.framework.common.response.Response;
-import com.hanserwei.hannote.auth.model.vo.SendVerificationCodeReqVO;
+import com.hanserwei.hannote.auth.model.vo.verificationcode.SendVerificationCodeReqVO;
 import com.hanserwei.hannote.auth.service.VerificationCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

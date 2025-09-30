@@ -1,4 +1,4 @@
-package com.hanserwei.hannote.auth.model.vo;
+package com.hanserwei.hannote.auth.model.vo.verificationcode;
 
 import com.hanserwei.framework.common.validate.EmailNumber;
 import jakarta.validation.constraints.NotBlank;

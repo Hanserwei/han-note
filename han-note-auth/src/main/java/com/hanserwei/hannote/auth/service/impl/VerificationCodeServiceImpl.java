@@ -5,7 +5,7 @@ import com.hanserwei.framework.common.exception.ApiException;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.auth.constant.RedisKeyConstants;
 import com.hanserwei.hannote.auth.enums.ResponseCodeEnum;
-import com.hanserwei.hannote.auth.model.vo.SendVerificationCodeReqVO;
+import com.hanserwei.hannote.auth.model.vo.verificationcode.SendVerificationCodeReqVO;
 import com.hanserwei.hannote.auth.service.VerificationCodeService;
 import com.hanserwei.hannote.auth.utils.MailHelper;
 import jakarta.annotation.Resource;

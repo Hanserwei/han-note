@@ -15,7 +15,8 @@ public enum ResponseCodeEnum implements BaseExceptionInterface {
     // ----------- 业务异常状态码 -----------
     VERIFICATION_CODE_SEND_FREQUENTLY("AUTH-20000", "请求太频繁，请3分钟后再试"),
     MAIL_SEND_ERROR("AUTH-20001", "邮件发送失败，请稍后再试"),
-    TEMPLATE_RENDER_ERROR("AUTH-20002", "模板渲染错误")
+    TEMPLATE_RENDER_ERROR("AUTH-20002", "模板渲染错误"),
+    USER_NOT_EXIST("AUTH-20003", "用户不存在"),
     ;
 
     // 异常码
