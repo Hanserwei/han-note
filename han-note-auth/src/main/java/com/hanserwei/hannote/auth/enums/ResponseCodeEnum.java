@@ -13,6 +13,9 @@ public enum ResponseCodeEnum implements BaseExceptionInterface {
     PARAM_NOT_VALID("AUTH-10001", "参数错误！！！"),
 
     // ----------- 业务异常状态码 -----------
+    VERIFICATION_CODE_SEND_FREQUENTLY("AUTH-20000", "请求太频繁，请3分钟后再试"),
+    MAIL_SEND_ERROR("AUTH-20001", "邮件发送失败，请稍后再试"),
+    TEMPLATE_RENDER_ERROR("AUTH-20002", "模板渲染错误")
     ;
 
     // 异常码
