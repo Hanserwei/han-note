@@ -5,15 +5,18 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 用户表
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "t_user")
@@ -52,7 +55,7 @@ public class UserDO {
      * 生日
      */
     @TableField(value = "birthday")
-    private Date birthday;
+    private LocalDate birthday;
 
     /**
      * 背景图
@@ -70,13 +73,13 @@ public class UserDO {
      * 性别(0：女 1：男)
      */
     @TableField(value = "sex")
-    private Byte sex;
+    private Integer sex;
 
     /**
      * 状态(0：启用 1：禁用)
      */
     @TableField(value = "`status`")
-    private Byte status;
+    private Integer status;
 
     /**
      * 个人简介
@@ -88,13 +91,13 @@ public class UserDO {
      * 创建时间
      */
     @TableField(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 逻辑删除(0：未删除 1：已删除)

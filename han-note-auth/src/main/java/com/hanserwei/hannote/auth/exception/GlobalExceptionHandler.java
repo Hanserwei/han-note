@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Optional;
 
+@SuppressWarnings("LoggingSimilarMessage")
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -67,10 +68,29 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 捕获 guava 参数校验异常
+     *
+     * @return Response.fail(ResponseCodeEnum.PARAM_NOT_VALID)
+     */
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseBody
+    public Response<Object> handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException e) {
+        // 参数错误异常码
+        String errorCode = ResponseCodeEnum.PARAM_NOT_VALID.getErrorCode();
+
+        // 错误信息
+        String errorMessage = e.getMessage();
+
+        log.warn("{} request error, errorCode: {}, errorMessage: {}", request.getRequestURI(), errorCode, errorMessage);
+
+        return Response.fail(errorCode, errorMessage);
+    }
+
+    /**
      * 其他类型异常
      *
      * @param request 请求
-     * @param e 异常
+     * @param e       异常
      * @return Response.fail(ResponseCodeEnum.SYSTEM_ERROR)
      */
     @ExceptionHandler({Exception.class})

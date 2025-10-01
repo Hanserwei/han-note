@@ -19,7 +19,7 @@ public class UserLoginReqVO {
      */
     @NotBlank(message = "邮箱不能为空")
     @EmailNumber
-    private String phone;
+    private String email;
 
     /**
      * 验证码
