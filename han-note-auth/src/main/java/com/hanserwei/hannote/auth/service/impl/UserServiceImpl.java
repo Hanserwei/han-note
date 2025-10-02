@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
+import com.hanserwei.framework.biz.context.holder.LoginUserContextHolder;
 import com.hanserwei.framework.common.enums.DeletedEnum;
 import com.hanserwei.framework.common.enums.StatusEnum;
 import com.hanserwei.framework.common.exception.ApiException;
@@ -21,13 +22,14 @@ import com.hanserwei.hannote.auth.domain.mapper.UserDOMapper;
 import com.hanserwei.hannote.auth.domain.mapper.UserRoleDOMapper;
 import com.hanserwei.hannote.auth.enums.LoginTypeEnum;
 import com.hanserwei.hannote.auth.enums.ResponseCodeEnum;
-import com.hanserwei.hannote.auth.filter.LoginUserContextHolder;
 import com.hanserwei.hannote.auth.model.vo.user.UserLoginReqVO;
 import com.hanserwei.hannote.auth.service.UserService;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -46,6 +48,8 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     private final UserRoleDOMapper userRoleDOMapper;
     private final TransactionTemplate transactionTemplate;
     private final RoleDOMapper roleDOMapper;
+    @Resource(name = "authTaskExecutor")
+    private ThreadPoolTaskExecutor authTaskExecutor;
 
     @Override
     public Response<String> loginAndRegister(UserLoginReqVO reqVO) {
@@ -147,6 +151,10 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     @Override
     public Response<?> logout() {
         Long userId = LoginUserContextHolder.getUserId();
+        authTaskExecutor.submit(() -> {
+            Long userId2 = LoginUserContextHolder.getUserId();
+            log.info("==> 异步线程中获取 userId: {}", userId2);
+        });
         StpUtil.logout(userId);
         return Response.success();
     }

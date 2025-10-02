@@ -9,6 +9,7 @@
     <modules>
         <module>hanserwei-common</module>
         <module>hanserwei-spring-boot-starter-biz-operationlog</module>
+        <module>hanserwei-spring-boot-starter-biz-context</module>
         <module>hanserwei-spring-boot-starter-jackson</module>
     </modules>
 
