@@ -6,7 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.hanserwei.framework.common.enums.DeletedEnum;
 import com.hanserwei.framework.common.enums.StatusEnum;
 import com.hanserwei.framework.common.exception.ApiException;
@@ -14,8 +13,10 @@ import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.auth.constant.RedisKeyConstants;
 import com.hanserwei.hannote.auth.constant.RoleConstants;
+import com.hanserwei.hannote.auth.domain.dataobject.RoleDO;
 import com.hanserwei.hannote.auth.domain.dataobject.UserDO;
 import com.hanserwei.hannote.auth.domain.dataobject.UserRoleDO;
+import com.hanserwei.hannote.auth.domain.mapper.RoleDOMapper;
 import com.hanserwei.hannote.auth.domain.mapper.UserDOMapper;
 import com.hanserwei.hannote.auth.domain.mapper.UserRoleDOMapper;
 import com.hanserwei.hannote.auth.enums.LoginTypeEnum;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,6 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     private final RedisTemplate<String, Object> redisTemplate;
     private final UserRoleDOMapper userRoleDOMapper;
     private final TransactionTemplate transactionTemplate;
+    private final RoleDOMapper roleDOMapper;
 
     @Override
     public Response<String> loginAndRegister(UserLoginReqVO reqVO) {
@@ -122,10 +125,13 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
                         .build();
                 userRoleDOMapper.insert(userRoleDO);
 
-                // 将该用户的角色 ID 存入 Redis 中
-                List<Long> roles = Lists.newArrayList();
-                roles.add(RoleConstants.COMMON_USER_ROLE_ID);
-                String userRolesKey = RedisKeyConstants.buildUserRoleKey(email);
+                RoleDO roleDO = roleDOMapper.selectByPrimaryKey(RoleConstants.COMMON_USER_ROLE_ID);
+
+                // 将该用户的角色 ID 存入 Redis 中，指定初始容量为 1，这样可以减少在扩容时的性能开销
+                List<String> roles = new ArrayList<>(1);
+                roles.add(roleDO.getRoleKey());
+
+                String userRolesKey = RedisKeyConstants.buildUserRoleKey(userId);
                 redisTemplate.opsForValue().set(userRolesKey, JsonUtils.toJsonString(roles));
 
                 return userId;

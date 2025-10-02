@@ -10,7 +10,9 @@ public interface RoleDOMapper extends BaseMapper<RoleDO> {
     /**
      * 查询所有被启用的角色
      *
-     * @return
+     * @return 角色列表
      */
     List<RoleDO> selectEnabledList();
+
+    RoleDO selectByPrimaryKey(Long commonUserRoleId);
 }

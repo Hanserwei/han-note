@@ -1,14 +1,15 @@
+server:
+  port: 8000 # 指定启动端口
 spring:
-  application:
-    name: han-note-auth
-  profiles:
-    active: dev # 默认激活 dev 本地开发环境
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver # 指定数据库驱动类
-    # 数据库连接信息
-    url: ${spring.datasource.url}
-    username: ${spring.datasource.username} # 数据库用户名
-    password: ${spring.datasource.password} # 数据库密码
+  cloud:
+    gateway:
+      routes:
+        - id: auth
+          uri: lb://han-note-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
   data:
     redis:
       database: 5 # Redis 数据库索引（默认为 0）
@@ -23,28 +24,6 @@ spring:
           max-wait: -1ms # 连接池最大阻塞等待时间（使用负值表示没有限制）
           min-idle: 0 # 连接池中的最小空闲连接
           max-idle: 10 # 连接池中的最大空闲连接
-  mail:
-    host: smtp.qq.com
-    port: 587
-    username: 2628273921@qq.com
-    password: ${spring.mail.password}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.starttls.required: true
-server:
-  port: 8080 # 项目启动的端口
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-  global-config:
-    banner: false
-  mapper-locations: classpath*:/mapperxml/*.xml
-logging:
-  level:
-    com.hanserwei.hannote.auth.domain.mapper: debug
-############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）
   token-name: Authorization
@@ -62,5 +41,3 @@ sa-token:
   token-style: random-128
   # 是否输出操作日志
   is-log: true
-alarm:
-  type: mail # 告警类型

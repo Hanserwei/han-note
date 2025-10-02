@@ -35,20 +35,20 @@ public class RedisKeyConstants {
     /**
      * 构建用户-角色 Key
      *
-     * @param email 邮箱
+     * @param userId 邮箱
      * @return 用户角色key
      */
-    public static String buildUserRoleKey(String email) {
-        return USER_ROLES_KEY_PREFIX + email;
+    public static String buildUserRoleKey(Long userId) {
+        return USER_ROLES_KEY_PREFIX + userId;
     }
 
     /**
      * 构建角色对应的权限集合 KEY
      *
-     * @param roleId 角色ID
+     * @param roleKey 角色ID
      * @return 角色权限集合key
      */
-    public static String buildRolePermissionsKey(Long roleId) {
-        return ROLE_PERMISSIONS_KEY_PREFIX + roleId;
+    public static String buildRolePermissionsKey(String roleKey) {
+        return ROLE_PERMISSIONS_KEY_PREFIX + roleKey;
     }
 }
