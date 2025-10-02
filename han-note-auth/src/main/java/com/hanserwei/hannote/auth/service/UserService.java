@@ -14,4 +14,10 @@ public interface UserService extends IService<UserDO> {
      * @return 响应结果
      */
     Response<String> loginAndRegister(UserLoginReqVO reqVO);
+
+    /**
+     * 退出登录
+     * @return 响应结果
+     */
+    Response<?> logout(Long userId);
 }

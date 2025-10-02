@@ -142,4 +142,10 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
             }
         });
     }
+
+    @Override
+    public Response<?> logout(Long userId) {
+        StpUtil.logout(userId);
+        return Response.success();
+    }
 }

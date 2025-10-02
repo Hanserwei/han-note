@@ -29,8 +29,7 @@ public class UserController {
     @ApiOperationLog(description = "账号登出")
     public Response<?> logout(@RequestHeader("userId") String userId) {
         log.info("==> 网关透传过来的用户 ID: {}", userId);
-        // todo 账号退出登录逻辑待实现
-
-        return Response.success();
+        Long userIdLong = Long.parseLong(userId);
+        return userService.logout(userIdLong);
     }
 }
