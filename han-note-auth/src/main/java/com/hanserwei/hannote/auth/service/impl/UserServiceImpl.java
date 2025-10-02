@@ -21,6 +21,7 @@ import com.hanserwei.hannote.auth.domain.mapper.UserDOMapper;
 import com.hanserwei.hannote.auth.domain.mapper.UserRoleDOMapper;
 import com.hanserwei.hannote.auth.enums.LoginTypeEnum;
 import com.hanserwei.hannote.auth.enums.ResponseCodeEnum;
+import com.hanserwei.hannote.auth.filter.LoginUserContextHolder;
 import com.hanserwei.hannote.auth.model.vo.user.UserLoginReqVO;
 import com.hanserwei.hannote.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -144,7 +145,8 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     }
 
     @Override
-    public Response<?> logout(Long userId) {
+    public Response<?> logout() {
+        Long userId = LoginUserContextHolder.getUserId();
         StpUtil.logout(userId);
         return Response.success();
     }

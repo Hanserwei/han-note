@@ -19,5 +19,5 @@ public interface UserService extends IService<UserDO> {
      * 退出登录
      * @return 响应结果
      */
-    Response<?> logout(Long userId);
+    Response<?> logout();
 }
