@@ -22,6 +22,7 @@ import com.hanserwei.hannote.auth.domain.mapper.UserDOMapper;
 import com.hanserwei.hannote.auth.domain.mapper.UserRoleDOMapper;
 import com.hanserwei.hannote.auth.enums.LoginTypeEnum;
 import com.hanserwei.hannote.auth.enums.ResponseCodeEnum;
+import com.hanserwei.hannote.auth.model.vo.user.UpdatePasswordReqVO;
 import com.hanserwei.hannote.auth.model.vo.user.UserLoginReqVO;
 import com.hanserwei.hannote.auth.service.UserService;
 import jakarta.annotation.Resource;
@@ -30,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -50,6 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     private final RoleDOMapper roleDOMapper;
     @Resource(name = "authTaskExecutor")
     private ThreadPoolTaskExecutor authTaskExecutor;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Response<String> loginAndRegister(UserLoginReqVO reqVO) {
@@ -87,6 +90,19 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
                 }
                 break;
             case PASSWORD:
+                String password = reqVO.getPassword();
+                // 根据邮箱号查询
+                UserDO userDO1 = this.getOne(new QueryWrapper<UserDO>().eq("email", email));
+                if (Objects.isNull(userDO1)){
+                    throw new ApiException(ResponseCodeEnum.USER_NOT_FOUND);
+                }
+                // 拿到密文密码
+                String encodePassword = userDO1.getPassword();
+                boolean isPasswordCorrect = passwordEncoder.matches(password, encodePassword);
+                if (!isPasswordCorrect) {
+                    throw new ApiException(ResponseCodeEnum.MAIL_OR_PASSWORD_ERROR);
+                }
+                userId = userDO1.getId();
                 break;
             default:
                 break;
@@ -156,6 +172,25 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
             log.info("==> 异步线程中获取 userId: {}", userId2);
         });
         StpUtil.logout(userId);
+        return Response.success();
+    }
+
+    @Override
+    public Response<?> updatePassword(UpdatePasswordReqVO updatePasswordReqVO) {
+        // 新密码
+        String newPassword = updatePasswordReqVO.getNewPassword();
+        // 加密后的密码
+        String encodePassword = passwordEncoder.encode(newPassword);
+        // 获取用户ID
+        Long userId = LoginUserContextHolder.getUserId();
+
+        UserDO userDO = UserDO.builder()
+                .id(userId)
+                .password(encodePassword)
+                .updateTime(LocalDateTime.now())
+                .build();
+        // 更新用户密码
+        this.updateById(userDO);
         return Response.success();
     }
 }

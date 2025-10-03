@@ -5,6 +5,12 @@
     <file url="file://$PROJECT_DIR$/han-note-auth/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/han-note-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/han-note-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-oss/han-note-oss-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-oss/han-note-oss-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-oss/han-note-oss-biz/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-oss/han-note-oss-biz/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-oss/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-oss/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hanserwei-framework/hanserwei-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hanserwei-framework/hanserwei-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hanserwei-framework/hanserwei-spring-boot-starter-biz-context/src/main/java" charset="UTF-8" />
