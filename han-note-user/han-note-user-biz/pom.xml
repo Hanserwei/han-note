@@ -66,6 +66,10 @@
             <groupId>com.hanserwei</groupId>
             <artifactId>hanserwei-spring-boot-starter-biz-context</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>han-note-oss-api</artifactId>
+        </dependency>
 
     </dependencies>
 

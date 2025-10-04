@@ -4,6 +4,10 @@ server:
 spring:
   profiles:
     active: dev # 默认激活 dev 本地开发环境
+  servlet:
+    multipart:
+      max-file-size: 20MB       # 单个文件最大大小
+      max-request-size: 100MB   # 单次请求最大大小（包含多个文件）
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

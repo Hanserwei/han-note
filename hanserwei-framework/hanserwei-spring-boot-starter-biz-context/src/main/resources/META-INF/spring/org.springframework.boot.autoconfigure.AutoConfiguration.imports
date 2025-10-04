@@ -1,1 +1,2 @@
 com.hanserwei.framework.biz.context.config.ContextAutoConfiguration
+com.hanserwei.framework.biz.context.config.FeignContextAutoConfiguration
