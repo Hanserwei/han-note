@@ -1,4 +1,4 @@
-package com.hanserwei.hannote.auth.domain.dataobject;
+package com.hanserwei.hannote.user.biz.domain.dataobject;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

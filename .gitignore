@@ -44,3 +44,4 @@ build/
 /logs/
 /.idea/
 /han-note-oss/han-note-oss-biz/src/main/resources/application-dev.yml
+/han-note-user/han-note-user-biz/src/main/resources/application-dev.yml

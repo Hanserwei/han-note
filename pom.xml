@@ -15,6 +15,7 @@
         <module>hanserwei-framework</module>
         <module>han-note-gateway</module>
         <module>han-note-oss</module>
+        <module>han-note-user</module>
     </modules>
 
     <properties>
