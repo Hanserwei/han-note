@@ -34,13 +34,6 @@ spring:
       mail.smtp.starttls.required: true
 server:
   port: 8080 # 项目启动的端口
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-  global-config:
-    banner: false
-  mapper-locations: classpath*:/mapperxml/*.xml
 logging:
   level:
     com.hanserwei.hannote.auth.domain.mapper: debug
@@ -62,5 +55,3 @@ sa-token:
   token-style: random-128
   # 是否输出操作日志
   is-log: true
-alarm:
-  type: mail # 告警类型

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanserwei.hannote.user.biz.domain.mapper.PermissionDOMapper">
+  <resultMap id="BaseResultMap" type="com.hanserwei.hannote.user.biz.domain.dataobject.PermissionDO">
+    <!--@mbg.generated-->
+    <!--@Table t_permission-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="menu_icon" jdbcType="VARCHAR" property="menuIcon" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="permission_key" jdbcType="VARCHAR" property="permissionKey" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, parent_id, `name`, `type`, menu_url, menu_icon, sort, permission_key, `status`, 
+    create_time, update_time, is_deleted
+  </sql>
+
+  <select id="selectAppEnabledList" resultMap="BaseResultMap">
+      select id, name, permission_key
+      from t_permission
+      where status = 0
+        and type = 3
+        and is_deleted = 0
+  </select>
+</mapper>
