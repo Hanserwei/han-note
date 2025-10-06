@@ -45,3 +45,6 @@ build/
 /han-note-oss/han-note-oss-biz/src/main/resources/application-dev.yml
 /han-note-user/han-note-user-biz/src/main/resources/application-dev.yml
 /han-note-user/han-note-user-biz/logs/
+/han-note-kv/han-note-kv-biz/src/main/resources/application-dev.yml
+/han-note-kv/han-note-kv-biz/src/main/resources/application-prod.yml
+/han-note-kv/han-note-kv-biz/logs/

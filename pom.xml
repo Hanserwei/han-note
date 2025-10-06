@@ -16,6 +16,8 @@
         <module>han-note-gateway</module>
         <module>han-note-oss</module>
         <module>han-note-user</module>
+        <module>han-note-kv</module>
+        <module>han-note-distributed-id-generator</module>
     </modules>
 
     <properties>
@@ -220,7 +222,11 @@
                 <artifactId>han-note-user-api</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.hanserwei</groupId>
+                <artifactId>han-note-kv-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
