@@ -3,12 +3,6 @@ spring:
     name: han-note-auth
   profiles:
     active: dev # 默认激活 dev 本地开发环境
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver # 指定数据库驱动类
-    # 数据库连接信息
-    url: ${spring.datasource.url}
-    username: ${spring.datasource.username} # 数据库用户名
-    password: ${spring.datasource.password} # 数据库密码
   data:
     redis:
       database: 5 # Redis 数据库索引（默认为 0）

@@ -6,10 +6,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.hanserwei.hannote")
-public class HanNoteAuthApplication {
+public class HannoteAuthApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HanNoteAuthApplication.class, args);
+        SpringApplication.run(HannoteAuthApplication.class, args);
     }
 
 }

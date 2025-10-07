@@ -48,3 +48,4 @@ build/
 /han-note-kv/han-note-kv-biz/src/main/resources/application-dev.yml
 /han-note-kv/han-note-kv-biz/src/main/resources/application-prod.yml
 /han-note-kv/han-note-kv-biz/logs/
+/han-note-note/han-note-note-biz/src/main/resources/application-dev.yml

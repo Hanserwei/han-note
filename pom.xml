@@ -18,6 +18,8 @@
         <module>han-note-user</module>
         <module>han-note-kv</module>
         <module>han-note-distributed-id-generator</module>
+        <module>han-note-note</module>
+        <module>han-note-note/han-note-note-biz</module>
     </modules>
 
     <properties>
