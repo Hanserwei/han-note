@@ -21,6 +21,7 @@ import com.hanserwei.hannote.user.biz.domain.mapper.UserRoleDOMapper;
 import com.hanserwei.hannote.user.biz.enums.ResponseCodeEnum;
 import com.hanserwei.hannote.user.biz.enums.SexEnum;
 import com.hanserwei.hannote.user.biz.model.vo.UpdateUserInfoReqVO;
+import com.hanserwei.hannote.user.biz.rpc.DistributedIdGeneratorRpcService;
 import com.hanserwei.hannote.user.biz.rpc.OssRpcService;
 import com.hanserwei.hannote.user.biz.service.UserService;
 import com.hanserwei.hannote.user.dto.req.FindUserByEmailReqDTO;
@@ -53,6 +54,8 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     private RoleDOMapper roleDOMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private DistributedIdGeneratorRpcService distributedIdGeneratorRpcService;
 
     @Override
     public Response<?> updateUserInfo(UpdateUserInfoReqVO updateUserInfoReqVO) {
@@ -155,10 +158,14 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
         }
 
         // 否则注册新用户
-        // 获取全局自增的小憨书 ID
-        Long hanNoteId = redisTemplate.opsForValue().increment(RedisKeyConstants.HAN_NOTE_ID_GENERATOR_KEY);
+        // RPC获取全局自增的小憨书 ID
+        String hanNoteId = distributedIdGeneratorRpcService.getHannoteId();
+        // RPC调用获取用户ID
+        String userIdStr = distributedIdGeneratorRpcService.getUserId();
+        Long userId = Long.valueOf(userIdStr);
 
         UserDO userDO = UserDO.builder()
+                .id(userId)
                 .email(email)
                 .hanNoteId(String.valueOf(hanNoteId)) // 自动生成小憨书号 ID
                 .nickname("小憨憨" + hanNoteId) // 自动生成昵称, 如：小憨憨10000
@@ -170,9 +177,6 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
 
         // 添加入库
         this.save(userDO);
-
-        // 获取刚刚添加入库的用户 ID
-        Long userId = userDO.getId();
 
         // 给该用户分配一个默认角色
         UserRoleDO userRoleDO = UserRoleDO.builder()

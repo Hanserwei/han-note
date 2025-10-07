@@ -227,6 +227,12 @@
                 <artifactId>han-note-kv-api</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.hanserwei</groupId>
+                <artifactId>han-note-distributed-id-generator-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

@@ -84,6 +84,10 @@
             <groupId>com.hanserwei</groupId>
             <artifactId>han-note-user-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>han-note-distributed-id-generator-api</artifactId>
+        </dependency>
 
     </dependencies>
 
