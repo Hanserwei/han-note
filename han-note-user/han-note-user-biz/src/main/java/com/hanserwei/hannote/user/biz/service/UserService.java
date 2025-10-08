@@ -5,9 +5,11 @@ import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.user.biz.domain.dataobject.UserDO;
 import com.hanserwei.hannote.user.biz.model.vo.UpdateUserInfoReqVO;
 import com.hanserwei.hannote.user.dto.req.FindUserByEmailReqDTO;
+import com.hanserwei.hannote.user.dto.req.FindUserByIdReqDTO;
 import com.hanserwei.hannote.user.dto.req.RegisterUserReqDTO;
 import com.hanserwei.hannote.user.dto.req.UpdateUserPasswordReqDTO;
 import com.hanserwei.hannote.user.dto.resp.FindUserByEmailRspDTO;
+import com.hanserwei.hannote.user.dto.resp.FindUserByIdRspDTO;
 
 public interface UserService extends IService<UserDO> {
 
@@ -42,4 +44,12 @@ public interface UserService extends IService<UserDO> {
      * @return 响应结果
      */
     Response<?> updatePassword(UpdateUserPasswordReqDTO updateUserPasswordReqDTO);
+
+    /**
+     * 根据用户 ID 查询用户信息
+     *
+     * @param findUserByIdReqDTO 查询用户信息请求参数
+     * @return 响应结果
+     */
+    Response<FindUserByIdRspDTO> findById(FindUserByIdReqDTO findUserByIdReqDTO);
 }

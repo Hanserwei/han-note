@@ -25,9 +25,11 @@ import com.hanserwei.hannote.user.biz.rpc.DistributedIdGeneratorRpcService;
 import com.hanserwei.hannote.user.biz.rpc.OssRpcService;
 import com.hanserwei.hannote.user.biz.service.UserService;
 import com.hanserwei.hannote.user.dto.req.FindUserByEmailReqDTO;
+import com.hanserwei.hannote.user.dto.req.FindUserByIdReqDTO;
 import com.hanserwei.hannote.user.dto.req.RegisterUserReqDTO;
 import com.hanserwei.hannote.user.dto.req.UpdateUserPasswordReqDTO;
 import com.hanserwei.hannote.user.dto.resp.FindUserByEmailRspDTO;
+import com.hanserwei.hannote.user.dto.resp.FindUserByIdRspDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -204,7 +206,7 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     public Response<FindUserByEmailRspDTO> findByEmail(FindUserByEmailReqDTO findUserByEmailReqDTO) {
         String email = findUserByEmailReqDTO.getEmail();
         UserDO userDO = this.getOne(new QueryWrapper<UserDO>().eq("email", email));
-        if (Objects.isNull(userDO)){
+        if (Objects.isNull(userDO)) {
             throw new ApiException(ResponseCodeEnum.USER_NOT_FOUND);
         }
         // 构建返参
@@ -228,6 +230,24 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
 
         // 更新用户密码
         return updateById(userDO) ? Response.success() : Response.fail();
+    }
+
+    @Override
+    public Response<FindUserByIdRspDTO> findById(FindUserByIdReqDTO findUserByIdReqDTO) {
+        Long userId = findUserByIdReqDTO.getId();
+        UserDO userDO = this.getOne(new QueryWrapper<UserDO>().eq("id", userId));
+
+        // 判空
+        if (Objects.isNull(userDO)) {
+            throw new ApiException(ResponseCodeEnum.USER_NOT_FOUND);
+        }
+        // 构建返参
+        FindUserByIdRspDTO findUserByIdRspDTO = FindUserByIdRspDTO.builder()
+                .id(userDO.getId())
+                .nickName(userDO.getNickname())
+                .avatar(userDO.getAvatar())
+                .build();
+        return Response.success(findUserByIdRspDTO);
     }
 }
 
