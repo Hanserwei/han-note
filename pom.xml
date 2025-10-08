@@ -55,6 +55,7 @@
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <cos-api.version>5.6.227</cos-api.version>
         <feign-form.version>3.8.0</feign-form.version>
+        <caffeine.version>3.2.2</caffeine.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -234,7 +235,12 @@
                 <artifactId>han-note-distributed-id-generator-api</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            <!-- caffeine本地缓存-->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

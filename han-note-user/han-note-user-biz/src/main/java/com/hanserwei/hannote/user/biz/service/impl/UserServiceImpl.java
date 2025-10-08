@@ -1,7 +1,10 @@
 package com.hanserwei.hannote.user.biz.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Preconditions;
 import com.hanserwei.framework.biz.context.holder.LoginUserContextHolder;
 import com.hanserwei.framework.common.enums.DeletedEnum;
@@ -34,6 +37,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +47,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -58,6 +63,19 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
     private DistributedIdGeneratorRpcService distributedIdGeneratorRpcService;
+    @Resource(name = "userTaskExecutor")
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+    /**
+     * 用户信息本地缓存
+     */
+    @SuppressWarnings("NullableProblems")
+    private static final Cache<Long, FindUserByIdRspDTO> LOCAL_CACHE = Caffeine.newBuilder()
+            .initialCapacity(10000) // 设置初始容量为 10000 个条目
+            .maximumSize(10000) // 设置缓存的最大容量为 10000 个条目
+            .expireAfterWrite(1, TimeUnit.HOURS) // 设置缓存条目在写入后 1 小时过期
+            .build();
+
 
     @Override
     public Response<?> updateUserInfo(UpdateUserInfoReqVO updateUserInfoReqVO) {
@@ -235,10 +253,42 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
     @Override
     public Response<FindUserByIdRspDTO> findById(FindUserByIdReqDTO findUserByIdReqDTO) {
         Long userId = findUserByIdReqDTO.getId();
+
+        // 先从本地缓存获取
+        FindUserByIdRspDTO findUserByIdRspDTOLocalCache = LOCAL_CACHE.getIfPresent(userId);
+        if (Objects.nonNull(findUserByIdRspDTOLocalCache)) {
+            log.info("==> 本地缓存获取用户信息成功，用户 ID: {}, findUserByIdRspDTOLocalCache: {}", userId, JsonUtils.toJsonString(findUserByIdRspDTOLocalCache));
+            return Response.success(findUserByIdRspDTOLocalCache);
+        }
+
+        // 用户缓存 RedisKey
+        String userInfoKey = RedisKeyConstants.buildUserInfoKey(userId);
+        // 先从Redis中获取
+        String userInfoRedisValue = (String) redisTemplate.opsForValue().get(userInfoKey);
+        // 若 Redis 中有缓存，则直接返回
+        if (StringUtils.isNotBlank(userInfoRedisValue)) {
+            // 将 Redis 中缓存的 JSON 字符串转为对象
+            FindUserByIdRspDTO findUserByIdRspDTO = JsonUtils.parseObject(userInfoRedisValue, FindUserByIdRspDTO.class);
+            // 异步缓存到本地缓存中
+            threadPoolTaskExecutor.submit(() -> {
+                // 缓存到本地缓存中
+                if (findUserByIdRspDTO != null) {
+                    LOCAL_CACHE.put(userId, findUserByIdRspDTO);
+                }
+            });
+            return Response.success(findUserByIdRspDTO);
+        }
+        // 若 Redis 中没有缓存，则从数据库中获取
         UserDO userDO = this.getOne(new QueryWrapper<UserDO>().eq("id", userId));
 
         // 判空
         if (Objects.isNull(userDO)) {
+            threadPoolTaskExecutor.submit(() -> {
+                // 防止缓存击穿，缓存空对象
+                // 过期时间保底1分钟+随机秒数，避免缓存雪崩
+                long expireTime = 60 + RandomUtil.randomInt(60);
+                redisTemplate.opsForValue().set(userInfoKey, "null", expireTime, TimeUnit.SECONDS);
+            });
             throw new ApiException(ResponseCodeEnum.USER_NOT_FOUND);
         }
         // 构建返参
@@ -247,6 +297,11 @@ public class UserServiceImpl extends ServiceImpl<UserDOMapper, UserDO> implement
                 .nickName(userDO.getNickname())
                 .avatar(userDO.getAvatar())
                 .build();
+        threadPoolTaskExecutor.submit(() -> {
+            // 过期时间保底1天+随机秒数，避免缓存雪崩
+            long expireTime = 60 * 60 * 24 + RandomUtil.randomInt(60 * 60 * 24);
+            redisTemplate.opsForValue().set(userInfoKey, JsonUtils.toJsonString(findUserByIdRspDTO), expireTime, TimeUnit.SECONDS);
+        });
         return Response.success(findUserByIdRspDTO);
     }
 }
