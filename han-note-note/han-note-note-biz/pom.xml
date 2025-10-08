@@ -91,6 +91,15 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>han-note-kv-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>han-note-distributed-id-generator-api</artifactId>
+        </dependency>
     </dependencies>
 
 

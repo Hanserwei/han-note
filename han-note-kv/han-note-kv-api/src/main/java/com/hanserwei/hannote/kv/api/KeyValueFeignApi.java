@@ -3,6 +3,7 @@ package com.hanserwei.hannote.kv.api;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.kv.constant.ApiConstants;
 import com.hanserwei.hannote.kv.dto.req.AddNoteContentReqDTO;
+import com.hanserwei.hannote.kv.dto.req.DeleteNoteContentReqDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,6 @@ public interface KeyValueFeignApi {
     Response<?> findNoteContent(@RequestBody AddNoteContentReqDTO addNoteContentReqDTO);
 
     @PostMapping(value = PREFIX + "/note/content/delete")
-    Response<?> deleteNoteContent(@RequestBody AddNoteContentReqDTO addNoteContentReqDTO);
+    Response<?> deleteNoteContent(@RequestBody DeleteNoteContentReqDTO deleteNoteContentReqDTO);
 
 }

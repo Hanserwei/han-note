@@ -16,6 +16,12 @@ spring:
             - Path=/user/**
           filters:
             - StripPrefix=1
+        - id: note
+          uri: lb://han-note-note
+          predicates:
+            - Path=/note/**
+          filters:
+            - StripPrefix=1
   data:
     redis:
       database: 5 # Redis 数据库索引（默认为 0）

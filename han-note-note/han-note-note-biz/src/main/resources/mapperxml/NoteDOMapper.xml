@@ -18,10 +18,11 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="content_uuid" jdbcType="VARCHAR" property="contentUuid" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, title, is_content_empty, creator_id, topic_id, topic_name, is_top, `type`, img_uris, 
-    video_uri, visible, create_time, update_time, `status`
+    video_uri, visible, create_time, update_time, `status`, content_uuid
   </sql>
 </mapper>

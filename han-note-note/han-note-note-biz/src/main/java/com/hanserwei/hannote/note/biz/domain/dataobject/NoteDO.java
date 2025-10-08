@@ -4,15 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /**
  * 笔记表
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "t_note")
@@ -63,7 +66,7 @@ public class NoteDO {
      * 类型(0：图文 1：视频)
      */
     @TableField(value = "`type`")
-    private Byte type;
+    private Integer type;
 
     /**
      * 笔记图片链接(逗号隔开)
@@ -81,23 +84,29 @@ public class NoteDO {
      * 可见范围(0：公开,所有人可见 1：仅对自己可见)
      */
     @TableField(value = "visible")
-    private Byte visible;
+    private Integer visible;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 状态(0：待审核 1：正常展示 2：被删除(逻辑删除) 3：被下架)
      */
     @TableField(value = "`status`")
-    private Byte status;
+    private Integer status;
+
+    /**
+     * 笔记内容UUID
+     */
+    @TableField(value = "content_uuid")
+    private String contentUuid;
 }
