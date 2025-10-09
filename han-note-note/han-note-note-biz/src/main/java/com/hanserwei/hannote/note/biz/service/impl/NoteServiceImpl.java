@@ -13,6 +13,7 @@ import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.note.biz.constant.RedisKeyConstants;
 import com.hanserwei.hannote.note.biz.domain.dataobject.NoteDO;
+import com.hanserwei.hannote.note.biz.domain.dataobject.TopicDO;
 import com.hanserwei.hannote.note.biz.domain.mapper.NoteDOMapper;
 import com.hanserwei.hannote.note.biz.enums.NoteStatusEnum;
 import com.hanserwei.hannote.note.biz.enums.NoteTypeEnum;
@@ -21,6 +22,7 @@ import com.hanserwei.hannote.note.biz.enums.ResponseCodeEnum;
 import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailReqVO;
 import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailRspVO;
 import com.hanserwei.hannote.note.biz.model.vo.PublishNoteReqVO;
+import com.hanserwei.hannote.note.biz.model.vo.UpdateNoteReqVO;
 import com.hanserwei.hannote.note.biz.rpc.DistributedIdGeneratorRpcService;
 import com.hanserwei.hannote.note.biz.rpc.KeyValueRpcService;
 import com.hanserwei.hannote.note.biz.rpc.UserRpcService;
@@ -34,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -287,6 +290,104 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
             redisTemplate.opsForValue().set(noteDetailRedisKey, noteDetailJson1, expireSeconds, TimeUnit.SECONDS);
         });
         return Response.success(findNoteDetailRspVO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Response<?> updateNote(UpdateNoteReqVO updateNoteReqVO) {
+        // 笔记ID
+        Long noteId = updateNoteReqVO.getId();
+        // 笔记类型
+        Integer type = updateNoteReqVO.getType();
+
+        // 获取对应枚举类
+        NoteTypeEnum noteTypeEnum = NoteTypeEnum.valueOf(type);
+
+        // 判断笔记类型,如果非图文、视频笔记，则抛出异常
+        if (Objects.isNull(noteTypeEnum)){
+            throw new ApiException(ResponseCodeEnum.NOTE_TYPE_ERROR);
+        }
+        String imgUris = null;
+        String videoUri = null;
+
+        switch (noteTypeEnum) {
+            case IMAGE_TEXT -> {
+                List<String> imgUriList = updateNoteReqVO.getImgUris();
+                // 校验图片是否为空
+                Preconditions.checkArgument(CollUtil.isNotEmpty(imgUriList), "笔记图片不能为空");
+                // 校验图片数量
+                Preconditions.checkArgument(imgUriList.size() <= 8, "笔记图片不能多于 8 张");
+                imgUris = StringUtils.join(imgUriList, ",");
+            }
+            case VIDEO -> {
+                videoUri = updateNoteReqVO.getVideoUri();
+                // 校验视频链接是否为空
+                Preconditions.checkArgument(StringUtils.isNotBlank(videoUri), "笔记视频不能为空");
+            }
+            default -> {
+                // No operation needed, kept for clarity
+            }
+        }
+
+        // 话题
+        Long topicId = updateNoteReqVO.getTopicId();
+        String topicName = null;
+        if (Objects.nonNull(topicId)){
+            TopicDO topicDO = topicDOService.getById(topicId);
+            if (Objects.isNull(topicDO)){
+                throw new ApiException(ResponseCodeEnum.TOPIC_NOT_FOUND);
+            }
+            topicName = topicDO.getName();
+            // 判断提交的话题是否真实存在
+            if (StringUtils.isBlank(topicName)){
+                throw new ApiException(ResponseCodeEnum.TOPIC_NOT_FOUND);
+            }
+        }
+
+        // 更新笔记元数据表
+        String content = updateNoteReqVO.getContent();
+        NoteDO noteDO = NoteDO.builder()
+                .id(noteId)
+                .isContentEmpty(StringUtils.isBlank(content))
+                .imgUris(imgUris)
+                .title(updateNoteReqVO.getTitle())
+                .topicId(updateNoteReqVO.getTopicId())
+                .topicName(topicName)
+                .type(type)
+                .updateTime(LocalDateTime.now())
+                .videoUri(videoUri)
+                .build();
+        boolean updateResult = this.updateById(noteDO);
+        if (!updateResult){
+            throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
+        }
+        // 删除Redis缓存
+        String noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
+        redisTemplate.delete(noteDetailRedisKey);
+
+        // 删除本地缓存
+        LOCAL_CACHE.invalidate(noteId);
+
+        // 笔记内容更新
+        // 查询笔记内容对应的UUID
+        NoteDO noteDO1 = this.getById(noteId);
+        String contentUuid = noteDO1.getContentUuid();
+
+        // 笔记内容是否更新成功
+        boolean isUpdateContentSuccess = false;
+        if (StringUtils.isNotBlank(contentUuid)){
+            // 若笔记内容为空则删除kv存储
+            isUpdateContentSuccess = keyValueRpcService.deleteNoteContent(contentUuid);
+        }else {
+            // 若将无内容的笔记，更新为了有内容的笔记，需要重新生成 UUID
+            contentUuid = StringUtils.isBlank(contentUuid) ? UUID.randomUUID().toString() : contentUuid;
+            // 调用 K-V 更新短文本
+            isUpdateContentSuccess = keyValueRpcService.saveNoteContent(contentUuid, content);
+        }
+        if (!isUpdateContentSuccess){
+            throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
+        }
+        return Response.success();
     }
 
     /**

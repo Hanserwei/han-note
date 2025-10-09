@@ -6,6 +6,7 @@ import com.hanserwei.hannote.note.biz.domain.dataobject.NoteDO;
 import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailReqVO;
 import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailRspVO;
 import com.hanserwei.hannote.note.biz.model.vo.PublishNoteReqVO;
+import com.hanserwei.hannote.note.biz.model.vo.UpdateNoteReqVO;
 
 public interface NoteService extends IService<NoteDO> {
 
@@ -22,5 +23,12 @@ public interface NoteService extends IService<NoteDO> {
      * @return 笔记详情结果
      */
     Response<FindNoteDetailRspVO> findNoteDetail(FindNoteDetailReqVO findNoteDetailReqVO);
+
+    /**
+     * 笔记更新
+     * @param updateNoteReqVO 笔记更新请求
+     * @return 笔记更新结果
+     */
+    Response<?> updateNote(UpdateNoteReqVO updateNoteReqVO);
 
 }
