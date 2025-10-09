@@ -56,6 +56,10 @@
         <cos-api.version>5.6.227</cos-api.version>
         <feign-form.version>3.8.0</feign-form.version>
         <caffeine.version>3.2.2</caffeine.version>
+        <common-io.version>2.20.0</common-io.version>
+        <perf4j.version>0.9.16</perf4j.version>
+        <curator-recipes.version>5.9.0</curator-recipes.version>
+        <zookeeper.version>3.9.4</zookeeper.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -219,6 +223,26 @@
                 <groupId>io.github.openfeign.form</groupId>
                 <artifactId>feign-form</artifactId>
                 <version>${feign-form.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${common-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.perf4j</groupId>
+                <artifactId>perf4j</artifactId>
+                <version>${perf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator-recipes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.hanserwei</groupId>

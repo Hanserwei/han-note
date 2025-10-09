@@ -4,3 +4,22 @@ server:
 spring:
   profiles:
     active: dev # 默认激活 dev 本地开发环境
+  datasource:
+    driver-class-name: ${LEAF_JDBC_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+    url: ${LEAF_JDBC_URL:jdbc:mysql://127.0.0.1:3306/leaf?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${LEAF_JDBC_USERNAME:root}
+    password: ${LEAF_JDBC_PASSWORD:mysql}
+
+leaf:
+  name: ${LEAF_NAME:han-note-leaf}
+  jdbc:
+    driver-class-name: ${LEAF_JDBC_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+    url: ${LEAF_JDBC_URL:jdbc:mysql://127.0.0.1:3306/leaf?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${LEAF_JDBC_USERNAME:root}
+    password: ${LEAF_JDBC_PASSWORD:mysql}
+  segment:
+    enable: ${LEAF_SEGMENT_ENABLE:true}
+  snowflake:
+    enable: ${LEAF_SNOWFLAKE_ENABLE:true}
+    zk-address: "${LEAF_SNOWFLAKE_ZK_ADDRESS:127.0.0.1:2181}"
+    port: ${LEAF_SNOWFLAKE_PORT:2222}

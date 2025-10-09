@@ -1,44 +1,53 @@
 package com.hanserwei.hannote.distributed.id.generator.biz.service;
 
-
-import com.hanserwei.hannote.distributed.id.generator.biz.constant.Constants;
+import com.hanserwei.hannote.distributed.id.generator.biz.config.LeafProperties;
 import com.hanserwei.hannote.distributed.id.generator.biz.core.IDGen;
-import com.hanserwei.hannote.distributed.id.generator.biz.core.common.PropertyFactory;
 import com.hanserwei.hannote.distributed.id.generator.biz.core.common.Result;
 import com.hanserwei.hannote.distributed.id.generator.biz.core.common.ZeroIDGen;
 import com.hanserwei.hannote.distributed.id.generator.biz.core.snowflake.SnowflakeIDGenImpl;
-import com.hanserwei.hannote.distributed.id.generator.biz.exception.InitException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.Properties;
-
-@Service("SnowflakeService")
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class SnowflakeService {
-    private Logger logger = LoggerFactory.getLogger(SnowflakeService.class);
+
+    private final LeafProperties leafProperties;
 
     private IDGen idGen;
 
-    public SnowflakeService() throws InitException {
-        Properties properties = PropertyFactory.getProperties();
-        boolean flag = Boolean.parseBoolean(properties.getProperty(Constants.LEAF_SNOWFLAKE_ENABLE, "true"));
-        if (flag) {
-            String zkAddress = properties.getProperty(Constants.LEAF_SNOWFLAKE_ZK_ADDRESS);
-            int port = Integer.parseInt(properties.getProperty(Constants.LEAF_SNOWFLAKE_PORT));
-            idGen = new SnowflakeIDGenImpl(zkAddress, port);
-            if(idGen.init()) {
-                logger.info("Snowflake Service Init Successfully");
+    @PostConstruct
+    public void init() {
+        if (leafProperties.getSnowflake().isEnable()) {
+            String zkAddress = leafProperties.getSnowflake().getZkAddress();
+            if (!StringUtils.hasText(zkAddress)) {
+                throw new IllegalStateException("Snowflake Service Init Fail: zk address is required");
+            }
+            int port = leafProperties.getSnowflake().getPort();
+            if (port <= 0) {
+                throw new IllegalStateException("Snowflake Service Init Fail: port must be positive");
+            }
+            SnowflakeIDGenImpl snowflakeIDGen = new SnowflakeIDGenImpl(leafProperties.getName(), zkAddress, port);
+            if (snowflakeIDGen.init()) {
+                this.idGen = snowflakeIDGen;
+                log.info("Snowflake Service Init Successfully with zkAddress={} and port={}", zkAddress, port);
             } else {
-                throw new InitException("Snowflake Service Init Fail");
+                throw new IllegalStateException("Snowflake Service Init Fail");
             }
         } else {
-            idGen = new ZeroIDGen();
-            logger.info("Zero ID Gen Service Init Successfully");
+            this.idGen = new ZeroIDGen();
+            log.info("Snowflake Service disabled, Zero ID Gen Service Init Successfully");
         }
     }
 
     public Result getId(String key) {
+        if (idGen == null) {
+            throw new IllegalStateException("Snowflake Service not initialized");
+        }
         return idGen.get(key);
     }
 }

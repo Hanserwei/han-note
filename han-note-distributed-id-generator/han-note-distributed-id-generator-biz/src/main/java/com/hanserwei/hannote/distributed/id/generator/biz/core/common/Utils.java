@@ -19,7 +19,7 @@ public class Utils {
         try {
             List<String> ipList = getHostAddress(null);
             // default the first
-            ip = (!ipList.isEmpty()) ? ipList.get(0) : "";
+            ip = (!ipList.isEmpty()) ? ipList.getFirst() : "";
         } catch (Exception ex) {
             ip = "";
             logger.warn("Utils get IP warn", ex);
@@ -32,7 +32,7 @@ public class Utils {
         interfaceName = interfaceName.trim();
         try {
             List<String> ipList = getHostAddress(interfaceName);
-            ip = (!ipList.isEmpty()) ? ipList.get(0) : "";
+            ip = (!ipList.isEmpty()) ? ipList.getFirst() : "";
         } catch (Exception ex) {
             ip = "";
             logger.warn("Utils get IP warn", ex);

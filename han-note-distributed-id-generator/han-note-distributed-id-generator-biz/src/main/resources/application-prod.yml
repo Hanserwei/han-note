@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${LEAF_DB_URL:jdbc:mysql://db-host:3306/leaf?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}
+    username: ${LEAF_DB_USERNAME:leaf_user}
+    password: ${LEAF_DB_PASSWORD:leaf_password}
+
+leaf:
+  snowflake:
+    zk-address: "${LEAF_SNOWFLAKE_ZK_ADDRESS:zk.example.com:2181}"
+    port: ${LEAF_SNOWFLAKE_PORT:2222}

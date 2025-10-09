@@ -1,75 +1,50 @@
 package com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.impl;
 
-
 import com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocDao;
 import com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocMapper;
 import com.hanserwei.hannote.distributed.id.generator.biz.core.segment.model.LeafAlloc;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.util.List;
 
+@Slf4j
+@Primary
+@Repository
+@RequiredArgsConstructor
 public class IDAllocDaoImpl implements IDAllocDao {
 
-    SqlSessionFactory sqlSessionFactory;
-
-    public IDAllocDaoImpl(DataSource dataSource) {
-        TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        Environment environment = new Environment("development", transactionFactory, dataSource);
-        Configuration configuration = new Configuration(environment);
-        configuration.addMapper(IDAllocMapper.class);
-        sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+    private final IDAllocMapper idAllocMapper;
+    @PostConstruct
+    void logInit() {
+        log.info("IDAllocDaoImpl initialized as primary IDAllocDao implementation");
     }
 
     @Override
     public List<LeafAlloc> getAllLeafAllocs() {
-        SqlSession sqlSession = sqlSessionFactory.openSession(false);
-        try {
-            return sqlSession.selectList("com.hanserwei.hannote.segment.dao.IDAllocMapper.getAllLeafAllocs");
-        } finally {
-            sqlSession.close();
-        }
+        return idAllocMapper.getAllLeafAllocs();
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LeafAlloc updateMaxIdAndGetLeafAlloc(String tag) {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
-            sqlSession.update("com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocMapper.updateMaxId", tag);
-            LeafAlloc result = sqlSession.selectOne("com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocMapper.getLeafAlloc", tag);
-            sqlSession.commit();
-            return result;
-        } finally {
-            sqlSession.close();
-        }
+        idAllocMapper.updateMaxId(tag);
+        return idAllocMapper.getLeafAlloc(tag);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LeafAlloc updateMaxIdByCustomStepAndGetLeafAlloc(LeafAlloc leafAlloc) {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
-            sqlSession.update("com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocMapper.updateMaxIdByCustomStep", leafAlloc);
-            LeafAlloc result = sqlSession.selectOne("com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocMapper.getLeafAlloc", leafAlloc.getKey());
-            sqlSession.commit();
-            return result;
-        } finally {
-            sqlSession.close();
-        }
+        idAllocMapper.updateMaxIdByCustomStep(leafAlloc);
+        return idAllocMapper.getLeafAlloc(leafAlloc.getKey());
     }
 
     @Override
     public List<String> getAllTags() {
-        SqlSession sqlSession = sqlSessionFactory.openSession(false);
-        try {
-            return sqlSession.selectList("com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao.IDAllocMapper.getAllTags");
-        } finally {
-            sqlSession.close();
-        }
+        return idAllocMapper.getAllTags();
     }
 }

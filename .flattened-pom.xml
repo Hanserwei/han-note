@@ -16,6 +16,10 @@
         <module>han-note-gateway</module>
         <module>han-note-oss</module>
         <module>han-note-user</module>
+        <module>han-note-kv</module>
+        <module>han-note-distributed-id-generator</module>
+        <module>han-note-note</module>
+        <module>han-note-note/han-note-note-biz</module>
     </modules>
 
     <properties>
@@ -51,6 +55,11 @@
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <cos-api.version>5.6.227</cos-api.version>
         <feign-form.version>3.8.0</feign-form.version>
+        <caffeine.version>3.2.2</caffeine.version>
+        <common-io.version>2.20.0</common-io.version>
+        <perf4j.version>0.9.16</perf4j.version>
+        <curator-recipes.version>5.9.0</curator-recipes.version>
+        <zookeeper.version>3.9.4</zookeeper.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -216,11 +225,46 @@
                 <version>${feign-form.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${common-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.perf4j</groupId>
+                <artifactId>perf4j</artifactId>
+                <version>${perf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator-recipes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.hanserwei</groupId>
                 <artifactId>han-note-user-api</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.hanserwei</groupId>
+                <artifactId>han-note-kv-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hanserwei</groupId>
+                <artifactId>han-note-distributed-id-generator-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <!-- caffeine本地缓存-->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
