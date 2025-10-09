@@ -11,6 +11,7 @@ import com.hanserwei.framework.biz.context.holder.LoginUserContextHolder;
 import com.hanserwei.framework.common.exception.ApiException;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.framework.common.utils.JsonUtils;
+import com.hanserwei.hannote.note.biz.constant.MQConstants;
 import com.hanserwei.hannote.note.biz.constant.RedisKeyConstants;
 import com.hanserwei.hannote.note.biz.domain.dataobject.NoteDO;
 import com.hanserwei.hannote.note.biz.domain.dataobject.TopicDO;
@@ -33,7 +34,12 @@ import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +66,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 笔记详情本地缓存
@@ -344,6 +352,10 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
             }
         }
 
+        // 删除 Redis 缓存
+        String noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
+        redisTemplate.delete(noteDetailRedisKey);
+
         // 更新笔记元数据表
         String content = updateNoteReqVO.getContent();
         NoteDO noteDO = NoteDO.builder()
@@ -361,12 +373,38 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         if (!updateResult){
             throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
         }
+
+        // 一致性保证：延迟双删策略
+        // 异步发送延时消息
+        Message<String> message = MessageBuilder.withPayload(String.valueOf(noteId))
+                .build();
+
+        rocketMQTemplate.asyncSend(MQConstants.TOPIC_DELAY_DELETE_NOTE_REDIS_CACHE, message,
+                new SendCallback() {
+                    @Override
+                    public void onSuccess(SendResult sendResult) {
+                        log.info("## 延时删除 Redis 笔记缓存消息发送成功...");
+                    }
+
+                    @Override
+                    public void onException(Throwable e) {
+                        log.error("## 延时删除 Redis 笔记缓存消息发送失败...", e);
+                    }
+                },
+                3000, // 超时时间(毫秒)
+                1 // 延迟级别，1 表示延时 1s
+        );
+
         // 删除Redis缓存
-        String noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
+        noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
         redisTemplate.delete(noteDetailRedisKey);
 
         // 删除本地缓存
         LOCAL_CACHE.invalidate(noteId);
+
+        // 同步发送广播模式 MQ，将所有实例中的本地缓存都删除掉
+        rocketMQTemplate.syncSend(MQConstants.TOPIC_DELETE_NOTE_LOCAL_CACHE, noteId);
+        log.info("====> MQ：删除笔记本地缓存发送成功...");
 
         // 笔记内容更新
         // 查询此篇笔记内容对应的 UUID

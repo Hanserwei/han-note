@@ -60,6 +60,8 @@
         <perf4j.version>0.9.16</perf4j.version>
         <curator-recipes.version>5.9.0</curator-recipes.version>
         <zookeeper.version>3.9.4</zookeeper.version>
+        <rocketmq-spring-boot.version>2.3.4</rocketmq-spring-boot.version>
+        <rocketmq-client.version>5.3.2</rocketmq-client.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -264,6 +266,22 @@
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
+            </dependency>
+            <!-- Rocket MQ -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq-spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-acl</artifactId>
+                <version>${rocketmq-client.version}</version>
             </dependency>
 
         </dependencies>
