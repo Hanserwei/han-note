@@ -3,6 +3,8 @@ package com.hanserwei.hannote.note.biz.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.note.biz.domain.dataobject.NoteDO;
+import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailReqVO;
+import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailRspVO;
 import com.hanserwei.hannote.note.biz.model.vo.PublishNoteReqVO;
 
 public interface NoteService extends IService<NoteDO> {
@@ -13,5 +15,12 @@ public interface NoteService extends IService<NoteDO> {
      * @return 笔记发布结果
      */
     Response<?> publishNote(PublishNoteReqVO publishNoteReqVO);
+
+    /**
+     * 笔记详情
+     * @param findNoteDetailReqVO 笔记详情请求
+     * @return 笔记详情结果
+     */
+    Response<FindNoteDetailRspVO> findNoteDetail(FindNoteDetailReqVO findNoteDetailReqVO);
 
 }

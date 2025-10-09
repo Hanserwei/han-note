@@ -4,6 +4,8 @@ import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.kv.api.KeyValueFeignApi;
 import com.hanserwei.hannote.kv.dto.req.AddNoteContentReqDTO;
 import com.hanserwei.hannote.kv.dto.req.DeleteNoteContentReqDTO;
+import com.hanserwei.hannote.kv.dto.req.FindNoteContentReqDTO;
+import com.hanserwei.hannote.kv.dto.resp.FindNoteContentRspDTO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +47,25 @@ public class KeyValueRpcService {
         Response<?> response = keyValueFeignApi.deleteNoteContent(deleteNoteContentReqDTO);
 
         return Objects.nonNull(response) && response.isSuccess();
+    }
+
+    /**
+     * 查询笔记内容
+     *
+     * @param uuid 笔记UUID
+     * @return 笔记内容
+     */
+    public String findNoteContent(String uuid) {
+        FindNoteContentReqDTO findNoteContentReqDTO = new FindNoteContentReqDTO();
+        findNoteContentReqDTO.setUuid(uuid);
+
+        Response<FindNoteContentRspDTO> response = keyValueFeignApi.findNoteContent(findNoteContentReqDTO);
+
+        if (Objects.isNull(response) || !response.isSuccess() || Objects.isNull(response.getData())) {
+            return null;
+        }
+
+        return response.getData().getContent();
     }
 
 }
