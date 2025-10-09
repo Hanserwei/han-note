@@ -154,6 +154,9 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 .build();
         try {
             boolean isSaveSuccess = this.save(noteDO);
+            if (!isSaveSuccess) {
+                throw new ApiException(ResponseCodeEnum.NOTE_PUBLISH_FAIL);
+            }
         } catch (Exception e) {
             log.error("保存笔记失败！", e);
             // RPC：调用KV服务，删除笔记内容
