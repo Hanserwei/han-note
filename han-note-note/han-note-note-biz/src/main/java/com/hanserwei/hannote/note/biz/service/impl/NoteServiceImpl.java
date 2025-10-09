@@ -369,24 +369,27 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         LOCAL_CACHE.invalidate(noteId);
 
         // 笔记内容更新
-        // 查询笔记内容对应的UUID
+        // 查询此篇笔记内容对应的 UUID
         NoteDO noteDO1 = this.getById(noteId);
         String contentUuid = noteDO1.getContentUuid();
 
         // 笔记内容是否更新成功
         boolean isUpdateContentSuccess = false;
-        if (StringUtils.isNotBlank(contentUuid)){
-            // 若笔记内容为空则删除kv存储
+        if (StringUtils.isBlank(content)) {
+            // 若笔记内容为空，则删除 K-V 存储
             isUpdateContentSuccess = keyValueRpcService.deleteNoteContent(contentUuid);
-        }else {
+        } else {
             // 若将无内容的笔记，更新为了有内容的笔记，需要重新生成 UUID
             contentUuid = StringUtils.isBlank(contentUuid) ? UUID.randomUUID().toString() : contentUuid;
             // 调用 K-V 更新短文本
             isUpdateContentSuccess = keyValueRpcService.saveNoteContent(contentUuid, content);
         }
-        if (!isUpdateContentSuccess){
+
+        // 如果更新失败，抛出业务异常，回滚事务
+        if (!isUpdateContentSuccess) {
             throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
         }
+
         return Response.success();
     }
 
