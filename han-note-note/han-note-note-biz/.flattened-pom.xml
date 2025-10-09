@@ -4,21 +4,39 @@
     <!-- 指定父项目 -->
     <parent>
         <groupId>com.hanserwei</groupId>
-        <artifactId>han-note-user</artifactId>
+        <artifactId>han-note-note</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <!-- 打包方式 -->
     <packaging>jar</packaging>
 
-    <artifactId>han-note-user-biz</artifactId>
+    <artifactId>han-note-note-biz</artifactId>
     <name>${project.artifactId}</name>
-    <description>用户服务业务模块</description>
+    <description>笔记服务业务层</description>
 
     <dependencies>
         <dependency>
             <groupId>com.hanserwei</groupId>
             <artifactId>hanserwei-common</artifactId>
+        </dependency>
+
+        <!-- 业务接口日志组件 -->
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>hanserwei-spring-boot-starter-biz-operationlog</artifactId>
+        </dependency>
+
+        <!-- 上下文组件 -->
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>hanserwei-spring-boot-starter-biz-context</artifactId>
+        </dependency>
+
+        <!-- Jackson 组件 -->
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>hanserwei-spring-boot-starter-jackson</artifactId>
         </dependency>
 
         <dependency>
@@ -32,6 +50,24 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Mybatis-plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+
+        <!-- MySQL 驱动 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+        <!-- Druid 数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
@@ -42,59 +78,30 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-3-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hanserwei</groupId>
-            <artifactId>hanserwei-spring-boot-starter-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hanserwei</groupId>
-            <artifactId>hanserwei-spring-boot-starter-biz-operationlog</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hanserwei</groupId>
-            <artifactId>hanserwei-spring-boot-starter-biz-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hanserwei</groupId>
-            <artifactId>han-note-oss-api</artifactId>
-        </dependency>
+
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
         <!-- Redis 连接池 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.hanserwei</groupId>
-            <artifactId>han-note-user-api</artifactId>
+            <artifactId>han-note-kv-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.hanserwei</groupId>
             <artifactId>han-note-distributed-id-generator-api</artifactId>
         </dependency>
-        <!-- Caffeine 本地缓存 -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-
     </dependencies>
+
 
     <build>
         <plugins>
