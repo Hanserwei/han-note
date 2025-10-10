@@ -3,10 +3,7 @@ package com.hanserwei.hannote.note.biz.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.note.biz.domain.dataobject.NoteDO;
-import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailReqVO;
-import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailRspVO;
-import com.hanserwei.hannote.note.biz.model.vo.PublishNoteReqVO;
-import com.hanserwei.hannote.note.biz.model.vo.UpdateNoteReqVO;
+import com.hanserwei.hannote.note.biz.model.vo.*;
 
 public interface NoteService extends IService<NoteDO> {
 
@@ -30,5 +27,19 @@ public interface NoteService extends IService<NoteDO> {
      * @return 笔记更新结果
      */
     Response<?> updateNote(UpdateNoteReqVO updateNoteReqVO);
+
+    /**
+     * 笔记仅对自己可见
+     * @param updateNoteVisibleOnlyMeReqVO 笔记仅对自己可见请求
+     * @return 笔记仅对自己可见结果
+     */
+    Response<?> visibleOnlyMe(UpdateNoteVisibleOnlyMeReqVO updateNoteVisibleOnlyMeReqVO);
+
+    /**
+     * 笔记置顶 / 取消置顶
+     * @param topNoteReqVO 笔记置顶 / 取消置顶请求
+     * @return 笔记置顶 / 取消置顶结果
+     */
+    Response<?> topNote(TopNoteReqVO topNoteReqVO);
 
 }

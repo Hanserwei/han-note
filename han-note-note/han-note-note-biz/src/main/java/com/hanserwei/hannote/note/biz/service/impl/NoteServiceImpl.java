@@ -20,10 +20,7 @@ import com.hanserwei.hannote.note.biz.enums.NoteStatusEnum;
 import com.hanserwei.hannote.note.biz.enums.NoteTypeEnum;
 import com.hanserwei.hannote.note.biz.enums.NoteVisibleEnum;
 import com.hanserwei.hannote.note.biz.enums.ResponseCodeEnum;
-import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailReqVO;
-import com.hanserwei.hannote.note.biz.model.vo.FindNoteDetailRspVO;
-import com.hanserwei.hannote.note.biz.model.vo.PublishNoteReqVO;
-import com.hanserwei.hannote.note.biz.model.vo.UpdateNoteReqVO;
+import com.hanserwei.hannote.note.biz.model.vo.*;
 import com.hanserwei.hannote.note.biz.rpc.DistributedIdGeneratorRpcService;
 import com.hanserwei.hannote.note.biz.rpc.KeyValueRpcService;
 import com.hanserwei.hannote.note.biz.rpc.UserRpcService;
@@ -312,7 +309,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         NoteTypeEnum noteTypeEnum = NoteTypeEnum.valueOf(type);
 
         // 判断笔记类型,如果非图文、视频笔记，则抛出异常
-        if (Objects.isNull(noteTypeEnum)){
+        if (Objects.isNull(noteTypeEnum)) {
             throw new ApiException(ResponseCodeEnum.NOTE_TYPE_ERROR);
         }
         String imgUris = null;
@@ -340,14 +337,14 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         // 话题
         Long topicId = updateNoteReqVO.getTopicId();
         String topicName = null;
-        if (Objects.nonNull(topicId)){
+        if (Objects.nonNull(topicId)) {
             TopicDO topicDO = topicDOService.getById(topicId);
-            if (Objects.isNull(topicDO)){
+            if (Objects.isNull(topicDO)) {
                 throw new ApiException(ResponseCodeEnum.TOPIC_NOT_FOUND);
             }
             topicName = topicDO.getName();
             // 判断提交的话题是否真实存在
-            if (StringUtils.isBlank(topicName)){
+            if (StringUtils.isBlank(topicName)) {
                 throw new ApiException(ResponseCodeEnum.TOPIC_NOT_FOUND);
             }
         }
@@ -370,7 +367,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 .videoUri(videoUri)
                 .build();
         boolean updateResult = this.updateById(noteDO);
-        if (!updateResult){
+        if (!updateResult) {
             throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
         }
 
@@ -428,6 +425,59 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
             throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
         }
 
+        return Response.success();
+    }
+
+    @Override
+    public Response<?> visibleOnlyMe(UpdateNoteVisibleOnlyMeReqVO updateNoteVisibleOnlyMeReqVO) {
+        // 笔记 ID
+        Long noteId = updateNoteVisibleOnlyMeReqVO.getId();
+
+        // 构建更新的实体类
+        NoteDO noteDO = NoteDO.builder()
+                .id(noteId)
+                .visible(NoteVisibleEnum.PRIVATE.getCode())
+                .updateTime(LocalDateTime.now())
+                .build();
+
+        // 仅仅更新status为1的数据
+        boolean updateResult = this.update(noteDO, new LambdaQueryWrapper<>(NoteDO.class).eq(NoteDO::getStatus, NoteStatusEnum.NORMAL.getCode()));
+        if (!updateResult) {
+            throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
+        }
+        // 删除Redis缓存
+        String noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
+        redisTemplate.delete(noteDetailRedisKey);
+        // 同步广播模式 MQ，将所有实例中的本地缓存都删除掉
+        rocketMQTemplate.syncSend(MQConstants.TOPIC_DELETE_NOTE_LOCAL_CACHE, noteId);
+        log.info("====> MQ：笔记更新，本地缓存发送成功...");
+        return Response.success();
+    }
+
+    @Override
+    public Response<?> topNote(TopNoteReqVO topNoteReqVO) {
+        Long noteId = topNoteReqVO.getId();
+        boolean isTop = topNoteReqVO.getIsTop();
+
+        //当前用户ID
+        Long currUserId = LoginUserContextHolder.getUserId();
+        NoteDO noteDO = NoteDO.builder()
+                .id(noteId)
+                .isTop(isTop)
+                .updateTime(LocalDateTime.now())
+                .creatorId(currUserId) // 只有笔记所有者，才能置顶/取消置顶笔记
+                .build();
+        boolean isUpdated = this.update(noteDO, new LambdaQueryWrapper<>(NoteDO.class).eq(NoteDO::getId, noteId).eq(NoteDO::getCreatorId, currUserId));
+        if (!isUpdated) {
+            throw new ApiException(ResponseCodeEnum.NOTE_UPDATE_FAIL);
+        }
+        // 删除Redis缓存
+        String noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
+        redisTemplate.delete(noteDetailRedisKey);
+
+        // 同步广播模式 MQ，将所有实例中的本地缓存都删除掉
+        rocketMQTemplate.syncSend(MQConstants.TOPIC_DELETE_NOTE_LOCAL_CACHE, noteId);
+        log.info("====> 笔记置顶更新，本地缓存发送成功...");
         return Response.success();
     }
 
