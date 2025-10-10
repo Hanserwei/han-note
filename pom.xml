@@ -20,6 +20,7 @@
         <module>han-note-distributed-id-generator</module>
         <module>han-note-note</module>
         <module>han-note-note/han-note-note-biz</module>
+        <module>han-note-user-relation</module>
     </modules>
 
     <properties>
