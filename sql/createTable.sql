@@ -16,7 +16,7 @@ CREATE TABLE `t_user`
     `is_deleted`     bit(1)          NOT NULL DEFAULT b'0' COMMENT '逻辑删除(0：未删除 1：已删除)',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `uk_han_note_id` (`han_note_id`),
-    UNIQUE KEY `uk_phone` (`phone`)
+    UNIQUE KEY `uk_email` (`email`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT ='用户表';
