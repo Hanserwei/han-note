@@ -11,7 +11,7 @@
     <!-- 打包方式 -->
     <packaging>jar</packaging>
 
-    <artifactId>han-note-api</artifactId>
+    <artifactId>han-note-note-api</artifactId>
     <name>${project.artifactId}</name>
     <description>RPC层, 供其他服务调用</description>
 
