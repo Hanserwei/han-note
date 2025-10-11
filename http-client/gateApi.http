@@ -1,0 +1,27 @@
+### 获取验证码
+POST http://localhost:8000/auth/verification/code/send
+Content-Type: application/json
+
+{
+  "email": "ssw010723@gmail.com"
+}
+
+### 登录/注册
+POST http://localhost:8000/auth/login
+Content-Type: application/json
+
+{
+  "email": "ssw010723@gmail.com",
+  "code": "135466",
+  "type": 1
+}
+
+### 修改密码
+POST http://localhost:8000/auth/password/update
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "newPassword": "wwgb1314"
+}
+

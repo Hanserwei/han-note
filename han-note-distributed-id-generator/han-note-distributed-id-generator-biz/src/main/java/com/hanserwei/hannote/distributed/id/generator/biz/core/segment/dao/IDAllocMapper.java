@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface IDAllocMapper {
 
-    @Select("SELECT biz_tag, max_id, step, update_time FROM leaf_alloc")
+    @Select("SELECT biz_tag, max_id, step, update_time FROM leaf")
     @Results(value = {
             @Result(column = "biz_tag", property = "key"),
             @Result(column = "max_id", property = "maxId"),
@@ -22,7 +22,7 @@ public interface IDAllocMapper {
     })
     List<LeafAlloc> getAllLeafAllocs();
 
-    @Select("SELECT biz_tag, max_id, step FROM leaf_alloc WHERE biz_tag = #{tag}")
+    @Select("SELECT biz_tag, max_id, step FROM leaf WHERE biz_tag = #{tag}")
     @Results(value = {
             @Result(column = "biz_tag", property = "key"),
             @Result(column = "max_id", property = "maxId"),
@@ -30,12 +30,12 @@ public interface IDAllocMapper {
     })
     LeafAlloc getLeafAlloc(@Param("tag") String tag);
 
-    @Update("UPDATE leaf_alloc SET max_id = max_id + step WHERE biz_tag = #{tag}")
+    @Update("UPDATE leaf SET max_id = max_id + step WHERE biz_tag = #{tag}")
     void updateMaxId(@Param("tag") String tag);
 
-    @Update("UPDATE leaf_alloc SET max_id = max_id + #{leafAlloc.step} WHERE biz_tag = #{leafAlloc.key}")
+    @Update("UPDATE leaf SET max_id = max_id + #{leafAlloc.step} WHERE biz_tag = #{leafAlloc.key}")
     void updateMaxIdByCustomStep(@Param("leafAlloc") LeafAlloc leafAlloc);
 
-    @Select("SELECT biz_tag FROM leaf_alloc")
+    @Select("SELECT biz_tag FROM leaf")
     List<String> getAllTags();
 }

@@ -27,13 +27,13 @@ public interface UserFeignApi {
     Response<Long> registerUser(@RequestBody RegisterUserReqDTO registerUserReqDTO);
 
     /**
-     * 根据手机号查询用户信息
+     * 根据邮箱号查询用户信息
      *
      * @param findUserByEmailReqDTO 查询信息请求
      * @return 响应
      */
     @PostMapping(value = PREFIX + "/findByEmail")
-    Response<FindUserByEmailRspDTO> findByPhone(@RequestBody FindUserByEmailReqDTO findUserByEmailReqDTO);
+    Response<FindUserByEmailRspDTO> findByEmail(@RequestBody FindUserByEmailReqDTO findUserByEmailReqDTO);
 
     /**
      * 更新密码

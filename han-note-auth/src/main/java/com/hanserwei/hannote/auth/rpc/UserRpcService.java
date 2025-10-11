@@ -44,7 +44,7 @@ public class UserRpcService {
         FindUserByEmailReqDTO findUserByEmailReqDTO = new FindUserByEmailReqDTO();
         findUserByEmailReqDTO.setEmail(email);
 
-        Response<FindUserByEmailRspDTO> response = userFeignApi.findByPhone(findUserByEmailReqDTO);
+        Response<FindUserByEmailRspDTO> response = userFeignApi.findByEmail(findUserByEmailReqDTO);
 
         if (!response.isSuccess()) {
             return null;
