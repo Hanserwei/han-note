@@ -119,3 +119,21 @@ Authorization: Bearer {{token}}
   "content": "我把图文笔记的内容修改了",
   "topicId": 1
 }
+
+### 关注自己
+POST http://localhost:8000/relation/relation/follow
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "followUserId": {{userId}}
+}
+
+### 关注不存在的用户
+POST http://localhost:8000/relation/relation/follow
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "followUserId": -1
+}
