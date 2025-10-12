@@ -25,3 +25,97 @@ Authorization: Bearer {{token}}
   "newPassword": "wwgb1314"
 }
 
+### 更新用户信息
+POST http://localhost:8000/user/user/update
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{token}}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="avatar.png"
+Content-Type: image/png
+
+< ./file/img.png
+
+--WebAppBoundary
+Content-Disposition: form-data; name="nickname"
+
+Hanserwei
+
+--WebAppBoundary
+Content-Disposition: form-data; name="hanNoteId"
+
+hanserwei010723
+
+--WebAppBoundary
+Content-Disposition: form-data; name="sex"
+
+1
+
+--WebAppBoundary
+Content-Disposition: form-data; name="birthday"
+
+2001-07-23
+
+--WebAppBoundary
+Content-Disposition: form-data; name="introduction"
+
+我在HttpClient里测试的
+
+--WebAppBoundary--
+Content-Disposition: form-data; name="backgroundImg"; filename="backgroundImg.png"
+Content-Type: image/jpeg
+
+< ./file/backgroundImg.jpg
+
+### 发布图文笔记
+POST http://localhost:8000/note/note/publish
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "type": 0,
+  "imgUris": [
+    "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
+  ],
+  "title": "图文笔记测试",
+  "content": "这个是图文笔记的测试",
+  "topicId": 1
+}
+
+### 发布视频笔记
+POST http://localhost:8000/note/note/publish
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "type": 1,
+  "videoUri": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg",
+  "title": "视频笔记测试",
+  "content": "这个是视频笔记的测试",
+  "topicId": 2
+}
+
+### 笔记详情
+POST http://localhost:8000/note/note/detail
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": {{noteId}}
+}
+
+### 修改笔记
+POST http://localhost:8000/note/note/update
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": {{noteId}},
+  "type": 0,
+  "imgUris": [
+    "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
+  ],
+  "title": "笔记修改测试",
+  "content": "我把图文笔记的内容修改了",
+  "topicId": 1
+}
