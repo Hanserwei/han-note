@@ -137,3 +137,12 @@ Authorization: Bearer {{token}}
 {
   "followUserId": -1
 }
+
+### 正常关注用户
+POST http://localhost:8000/relation/relation/follow
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "followUserId":{{otherUserId}}
+}
