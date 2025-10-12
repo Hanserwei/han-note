@@ -3,7 +3,7 @@ POST http://localhost:8000/auth/verification/code/send
 Content-Type: application/json
 
 {
-  "email": "ssw010723@gmail.com"
+  "email": "2628273921@qq.com"
 }
 
 ### 登录/注册
@@ -11,8 +11,8 @@ POST http://localhost:8000/auth/login
 Content-Type: application/json
 
 {
-  "email": "ssw010723@gmail.com",
-  "code": "135466",
+  "email": "2628273921@qq.com",
+  "code": "825004",
   "type": 1
 }
 
@@ -144,5 +144,5 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "followUserId":{{otherUserId}}
+  "followUserId": {{otherUserId}}
 }
