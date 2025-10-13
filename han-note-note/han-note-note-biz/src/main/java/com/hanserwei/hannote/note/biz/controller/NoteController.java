@@ -38,6 +38,12 @@ public class NoteController {
         return noteService.updateNote(updateNoteReqVO);
     }
 
+    @PostMapping(value = "/delete")
+    @ApiOperationLog(description = "笔记删除")
+    public Response<?> deleteNote(@Validated @RequestBody DeleteNoteReqVO deleteNoteReqVO) {
+        return noteService.deleteNote(deleteNoteReqVO);
+    }
+
     @PostMapping(value = "/visible/onlyme")
     @ApiOperationLog(description = "笔记仅对自己可见")
     public Response<?> visibleOnlyMe(@Validated @RequestBody UpdateNoteVisibleOnlyMeReqVO updateNoteVisibleOnlyMeReqVO) {

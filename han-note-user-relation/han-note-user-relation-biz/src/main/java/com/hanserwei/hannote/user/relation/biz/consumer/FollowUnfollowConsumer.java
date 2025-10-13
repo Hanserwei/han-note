@@ -1,5 +1,6 @@
 package com.hanserwei.hannote.user.relation.biz.consumer;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.user.relation.biz.constant.MQConstants;
 import com.hanserwei.hannote.user.relation.biz.domain.dataobject.FansDO;
@@ -7,6 +8,8 @@ import com.hanserwei.hannote.user.relation.biz.domain.dataobject.FollowingDO;
 import com.hanserwei.hannote.user.relation.biz.model.dto.FollowUserMqDTO;
 import com.hanserwei.hannote.user.relation.biz.service.FansDOService;
 import com.hanserwei.hannote.user.relation.biz.service.FollowingDOService;
+import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -23,19 +26,19 @@ import java.util.Objects;
         topic = MQConstants.TOPIC_FOLLOW_OR_UNFOLLOW
 )
 @Slf4j
+@RequiredArgsConstructor
 public class FollowUnfollowConsumer implements RocketMQListener<Message> {
     private final TransactionTemplate transactionTemplate;
     private final FollowingDOService followingDOService;
     private final FansDOService fansDOService;
 
-    public FollowUnfollowConsumer(TransactionTemplate transactionTemplate, FollowingDOService followingDOService, FansDOService fansDOService) {
-        this.transactionTemplate = transactionTemplate;
-        this.followingDOService = followingDOService;
-        this.fansDOService = fansDOService;
-    }
+    @Resource
+    private RateLimiter rateLimiter;
 
     @Override
     public void onMessage(Message message) {
+        // 流量削峰：通过获取令牌，如果没有令牌可用，将阻塞，直到获得
+        rateLimiter.acquire();
         // 消息体
         String bodyJsonStr = new String(message.getBody());
         // 标签

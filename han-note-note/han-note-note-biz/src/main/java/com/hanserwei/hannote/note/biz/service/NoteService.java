@@ -29,6 +29,13 @@ public interface NoteService extends IService<NoteDO> {
     Response<?> updateNote(UpdateNoteReqVO updateNoteReqVO);
 
     /**
+     * 笔记删除
+     * @param deleteNoteReqVO 笔记删除请求
+     * @return 笔记删除结果
+     */
+    Response<?> deleteNote(DeleteNoteReqVO deleteNoteReqVO);
+
+    /**
      * 笔记仅对自己可见
      * @param updateNoteVisibleOnlyMeReqVO 笔记仅对自己可见请求
      * @return 笔记仅对自己可见结果
