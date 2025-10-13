@@ -146,3 +146,12 @@ Authorization: Bearer {{token}}
 {
   "followUserId": {{otherUserId}}
 }
+
+### 取消关注
+POST http://localhost:8000/relation/relation/unfollow
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "unfollowUserId": 2100
+}
