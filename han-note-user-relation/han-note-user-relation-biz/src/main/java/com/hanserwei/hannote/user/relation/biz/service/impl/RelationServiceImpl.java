@@ -336,6 +336,7 @@ public class RelationServiceImpl implements RelationService {
             // 请求页码超过总页数
             if (pageNo > totalPage) {
                 log.info("==> 批量查询用户信息，返回空数据");
+                //noinspection DataFlowIssue
                 return PageResponse.success(null, pageNo, total);
             }
 
