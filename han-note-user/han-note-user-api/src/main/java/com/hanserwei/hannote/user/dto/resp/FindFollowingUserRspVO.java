@@ -9,25 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindUserByIdRspDTO {
+public class FindFollowingUserRspVO {
 
-    /**
-     * 用户 ID
-     */
-    private Long id;
+    private Long userId;
 
-    /**
-     * 昵称
-     */
-    private String nickName;
-
-    /**
-     * 头像
-     */
     private String avatar;
 
-    /**
-     * 简介
-     */
+    private String nickname;
+
     private String introduction;
+
 }

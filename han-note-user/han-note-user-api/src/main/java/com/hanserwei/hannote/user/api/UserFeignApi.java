@@ -2,15 +2,14 @@ package com.hanserwei.hannote.user.api;
 
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.user.constant.ApiConstants;
-import com.hanserwei.hannote.user.dto.req.FindUserByEmailReqDTO;
-import com.hanserwei.hannote.user.dto.req.FindUserByIdReqDTO;
-import com.hanserwei.hannote.user.dto.req.RegisterUserReqDTO;
-import com.hanserwei.hannote.user.dto.req.UpdateUserPasswordReqDTO;
+import com.hanserwei.hannote.user.dto.req.*;
 import com.hanserwei.hannote.user.dto.resp.FindUserByEmailRspDTO;
 import com.hanserwei.hannote.user.dto.resp.FindUserByIdRspDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @FeignClient(name = ApiConstants.SERVICE_NAME)
 public interface UserFeignApi {
@@ -52,4 +51,13 @@ public interface UserFeignApi {
      */
     @PostMapping(value = PREFIX + "/findById")
     Response<FindUserByIdRspDTO> findById(@RequestBody FindUserByIdReqDTO findUserByIdReqDTO);
+
+    /**
+     * 批量查询用户信息
+     *
+     * @param findUsersByIdsReqDTO 批量查询信息请求
+     * @return 响应
+     */
+    @PostMapping(value = PREFIX + "/findByIds")
+    Response<List<FindUserByIdRspDTO>> findByIds(@RequestBody FindUsersByIdsReqDTO findUsersByIdsReqDTO);
 }

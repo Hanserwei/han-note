@@ -5,8 +5,11 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hanserwei.framework.biz.context.holder.LoginUserContextHolder;
 import com.hanserwei.framework.common.exception.ApiException;
+import com.hanserwei.framework.common.response.PageResponse;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.framework.common.utils.JsonUtils;
+import com.hanserwei.hannote.user.dto.req.FindFollowingListReqVO;
+import com.hanserwei.hannote.user.dto.resp.FindFollowingUserRspVO;
 import com.hanserwei.hannote.user.dto.resp.FindUserByIdRspDTO;
 import com.hanserwei.hannote.user.relation.biz.constant.MQConstants;
 import com.hanserwei.hannote.user.relation.biz.constant.RedisKeyConstants;
@@ -38,6 +41,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -262,6 +266,81 @@ public class RelationServiceImpl implements RelationService {
             }
         });
         return Response.success();
+    }
+
+    @Override
+    public PageResponse<FindFollowingUserRspVO> findFollowingList(FindFollowingListReqVO findFollowingListReqVO) {
+        // 要查询的用户ID
+        Long userId = findFollowingListReqVO.getUserId();
+        // 页码
+        Integer pageNo = findFollowingListReqVO.getPageNo();
+        // 先从Redis中查询
+        String followingRedisKey = RedisKeyConstants.buildUserFollowingKey(userId);
+        // 查询目标用户的关注列表ZSet的总大小
+        Long total = redisTemplate.opsForZSet().zCard(followingRedisKey);
+        log.info("==> 查询目标用户的关注列表ZSet的总大小{}", total);
+
+
+        // 构建回参
+        List<FindFollowingUserRspVO> findFollowingUserRspVOS = null;
+
+        if (total != null) {
+            //缓存有数据
+            //每页展示10条数据
+            long limit = 10L;
+            // 计算一共多少页
+            long totalPage = PageResponse.getTotalPage(total, limit);
+
+            // 请求页码超过总页数
+            if (pageNo > totalPage) {
+                log.info("==> 请求页码超过总页数，返回空数据");
+                return PageResponse.success(null, pageNo, total);
+            }
+
+            // 准备从ZSet中查询分页数据
+            // 每页展示10条数据，计算偏移量
+            long offset = (pageNo - 1) * limit;
+
+            // 使用 ZREVRANGEBYSCORE 命令按 score 降序获取元素，同时使用 LIMIT 子句实现分页
+            // 注意：这里使用了 Double.POSITIVE_INFINITY 和 Double.NEGATIVE_INFINITY 作为分数范围
+            // 因为关注列表最多有 1000 个元素，这样可以确保获取到所有的元素
+            Set<Object> followingUserIdsSet = redisTemplate.opsForZSet()
+                    .reverseRangeByScore(followingRedisKey,
+                            Double.NEGATIVE_INFINITY,
+                            Double.POSITIVE_INFINITY,
+                            offset,
+                            limit);
+            if (CollUtil.isNotEmpty(followingUserIdsSet)) {
+                //提取所有ID
+                List<Long> userIds = followingUserIdsSet.stream()
+                        .map(object -> Long.parseLong(object.toString())).toList();
+
+                log.info("==> 批量查询用户信息，用户ID: {}", userIds);
+
+                // RPC: 批量查询用户信息
+                List<FindUserByIdRspDTO> findUserByIdRspDTOS = userRpcService.findByIds(userIds);
+
+                log.info("==> 批量查询用户信息，结果: {}", findUserByIdRspDTOS);
+
+                // 若不为空则，则DTO转换为VO
+                if (CollUtil.isNotEmpty(findUserByIdRspDTOS)) {
+                    findFollowingUserRspVOS = findUserByIdRspDTOS.stream().map(findUserByIdRspDTO -> FindFollowingUserRspVO.builder()
+                            .userId(findUserByIdRspDTO.getId())
+                            .introduction(findUserByIdRspDTO.getIntroduction())
+                            .nickname(findUserByIdRspDTO.getNickName())
+                            .avatar(findUserByIdRspDTO.getAvatar())
+                            .build()).toList();
+                }
+            }else {
+                // TODO: 若 Redis 中没有数据，则从数据库查询
+
+                // TODO: 异步将关注列表全量同步到 Redis
+            }
+        }
+        //noinspection DataFlowIssue
+        return PageResponse.success(findFollowingUserRspVOS,
+                pageNo,
+                total);
     }
 
     /**

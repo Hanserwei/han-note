@@ -155,3 +155,22 @@ Authorization: Bearer {{token}}
 {
   "unfollowUserId": 2100
 }
+
+### 批量查询用户信息
+POST http://localhost:8000/user/user/findByIds
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "ids": [100,2100,4100]
+}
+
+### 查询用户关注列表
+POST http://localhost:8000/relation/relation/following/list
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": 100,
+  "pageNo": 1
+}
