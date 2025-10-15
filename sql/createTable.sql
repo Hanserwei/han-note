@@ -179,4 +179,66 @@ ALTER TABLE t_following ADD UNIQUE uk_user_id_following_user_id(user_id, followi
 
 ALTER TABLE t_fans ADD UNIQUE uk_user_id_fans_user_id(user_id, fans_user_id);
 
+-- 表：t_note_like
+CREATE TABLE `t_note_like`
+(
+    `id`          bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id`     bigint          NOT NULL COMMENT '用户ID',
+    `note_id`     bigint          NOT NULL COMMENT '笔记ID',
+    `create_time` datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `status`      tinyint         NOT NULL DEFAULT '0' COMMENT '点赞状态(0：取消点赞 1：点赞)',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `uk_user_id_note_id` (`user_id`, `note_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT ='笔记点赞表';
+
+
+-- 表：t_note_collection
+CREATE TABLE `t_note_collection`
+(
+    `id`          bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id`     bigint          NOT NULL COMMENT '用户ID',
+    `note_id`     bigint          NOT NULL COMMENT '笔记ID',
+    `create_time` datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `status`      tinyint         NOT NULL DEFAULT '0' COMMENT '收藏状态(0：取消收藏 1：收藏)',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `uk_user_id_note_id` (`user_id`, `note_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT ='笔记收藏表';
+
+
+-- 表：t_note_count
+CREATE TABLE `t_note_count`
+(
+    `id`            bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `note_id`       bigint unsigned NOT NULL COMMENT '笔记ID',
+    `like_total`    bigint DEFAULT '0' COMMENT '获得点赞总数',
+    `collect_total` bigint DEFAULT '0' COMMENT '获得收藏总数',
+    `comment_total` bigint DEFAULT '0' COMMENT '被评论总数',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `uk_note_id` (`note_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT ='笔记计数表';
+
+-- 表：t_user_count
+CREATE TABLE `t_user_count`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id`         bigint unsigned NOT NULL COMMENT '用户ID',
+    `fans_total`      bigint DEFAULT '0' COMMENT '粉丝总数',
+    `following_total` bigint DEFAULT '0' COMMENT '关注总数',
+    `note_total`      bigint DEFAULT '0' COMMENT '发布笔记总数',
+    `like_total`      bigint DEFAULT '0' COMMENT '获得点赞总数',
+    `collect_total`   bigint DEFAULT '0' COMMENT '获得收藏总数',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `uk_user_id` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci
+    COMMENT ='用户计数表';
+
+
 
