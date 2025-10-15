@@ -64,6 +64,7 @@
         <zookeeper.version>3.9.4</zookeeper.version>
         <rocketmq-spring-boot.version>2.3.4</rocketmq-spring-boot.version>
         <rocketmq-client.version>5.3.2</rocketmq-client.version>
+        <buffertrigger.version>0.2.21</buffertrigger.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -284,6 +285,12 @@
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-acl</artifactId>
                 <version>${rocketmq-client.version}</version>
+            </dependency>
+            <!-- 快手 Buffer Trigger -->
+            <dependency>
+                <groupId>com.github.phantomthief</groupId>
+                <artifactId>buffer-trigger</artifactId>
+                <version>${buffertrigger.version}</version>
             </dependency>
 
         </dependencies>
