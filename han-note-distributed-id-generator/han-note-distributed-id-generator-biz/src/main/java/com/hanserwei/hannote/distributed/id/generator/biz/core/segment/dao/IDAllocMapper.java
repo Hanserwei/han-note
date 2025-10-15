@@ -1,12 +1,7 @@
 package com.hanserwei.hannote.distributed.id.generator.biz.core.segment.dao;
 
 import com.hanserwei.hannote.distributed.id.generator.biz.core.segment.model.LeafAlloc;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 

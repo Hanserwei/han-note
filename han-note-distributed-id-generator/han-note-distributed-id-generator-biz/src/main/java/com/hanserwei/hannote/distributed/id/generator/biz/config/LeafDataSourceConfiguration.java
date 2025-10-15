@@ -2,7 +2,6 @@ package com.hanserwei.hannote.distributed.id.generator.biz.config;
 
 import com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceBuilder;
 import jakarta.annotation.PostConstruct;
-import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -10,6 +9,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
 
 @Slf4j
 @Configuration
