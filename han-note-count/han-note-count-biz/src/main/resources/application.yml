@@ -29,6 +29,3 @@ mybatis-plus:
   global-config:
     banner: false
   mapper-locations: classpath*:/mapperxml/*.xml
-mq-consumer: # MQ 消费者
-  follow-unfollow: # 关注、取关
-    rate-limit: 5000 # 每秒限流阈值

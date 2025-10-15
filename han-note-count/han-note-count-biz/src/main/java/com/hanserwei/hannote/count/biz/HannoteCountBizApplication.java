@@ -1,4 +1,4 @@
-package com.hanserwei.hannote.count.biz.domain;
+package com.hanserwei.hannote.count.biz;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
