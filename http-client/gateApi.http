@@ -174,3 +174,13 @@ Authorization: Bearer {{token}}
   "userId": 100,
   "pageNo": 1
 }
+
+### 查询用户粉丝列表
+POST http://localhost:8000/relation/relation/fans/list
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": 100,
+  "pageNo": 1
+}

@@ -4,6 +4,8 @@ import com.hanserwei.framework.common.response.PageResponse;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.user.dto.req.FindFollowingListReqVO;
 import com.hanserwei.hannote.user.dto.resp.FindFollowingUserRspVO;
+import com.hanserwei.hannote.user.relation.biz.model.dto.FindFansUserRspVO;
+import com.hanserwei.hannote.user.relation.biz.model.vo.FindFansListReqVO;
 import com.hanserwei.hannote.user.relation.biz.model.vo.FollowUserReqVO;
 import com.hanserwei.hannote.user.relation.biz.model.vo.UnfollowUserReqVO;
 
@@ -30,4 +32,13 @@ public interface RelationService {
      * @return 响应
      */
     PageResponse<FindFollowingUserRspVO> findFollowingList(FindFollowingListReqVO findFollowingListReqVO);
+
+    /**
+     * 查询粉丝列表
+     *
+     * @param findFansListReqVO 查询粉丝列表请求
+     * @return 响应
+     */
+    PageResponse<FindFansUserRspVO> findFansList(FindFansListReqVO findFansListReqVO);
+
 }

@@ -5,6 +5,8 @@ import com.hanserwei.framework.common.response.PageResponse;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.user.dto.req.FindFollowingListReqVO;
 import com.hanserwei.hannote.user.dto.resp.FindFollowingUserRspVO;
+import com.hanserwei.hannote.user.relation.biz.model.dto.FindFansUserRspVO;
+import com.hanserwei.hannote.user.relation.biz.model.vo.FindFansListReqVO;
 import com.hanserwei.hannote.user.relation.biz.model.vo.FollowUserReqVO;
 import com.hanserwei.hannote.user.relation.biz.model.vo.UnfollowUserReqVO;
 import com.hanserwei.hannote.user.relation.biz.service.RelationService;
@@ -40,5 +42,11 @@ public class RelationController {
     @ApiOperationLog(description = "查询用户关注列表")
     public PageResponse<FindFollowingUserRspVO> findFollowingList(@Validated @RequestBody FindFollowingListReqVO findFollowingListReqVO) {
         return relationService.findFollowingList(findFollowingListReqVO);
+    }
+
+    @PostMapping("/fans/list")
+    @ApiOperationLog(description = "查询用户粉丝列表")
+    public PageResponse<FindFansUserRspVO> findFansList(@Validated @RequestBody FindFansListReqVO findFansListReqVO) {
+        return relationService.findFansList(findFansListReqVO);
     }
 }
