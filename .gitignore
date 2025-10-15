@@ -51,3 +51,4 @@ build/
 /han-note-note/han-note-note-biz/src/main/resources/application-dev.yml
 /han-note-user-relation/han-note-user-relation-biz/src/main/resources/application-dev.yml
 /han-note-user-relation/han-note-user-relation-biz/logs/
+/han-note-count/han-note-count-biz/src/main/resources/application-dev.yml
