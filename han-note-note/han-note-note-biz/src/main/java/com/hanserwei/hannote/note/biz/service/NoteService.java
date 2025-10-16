@@ -49,4 +49,12 @@ public interface NoteService extends IService<NoteDO> {
      */
     Response<?> topNote(TopNoteReqVO topNoteReqVO);
 
+    /**
+     * 点赞笔记
+     *
+     * @param likeNoteReqVO 点赞笔记请求
+     * @return 点赞笔记结果
+     */
+    Response<?> likeNote(LikeNoteReqVO likeNoteReqVO);
+
 }

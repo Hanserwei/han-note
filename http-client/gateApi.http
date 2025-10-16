@@ -184,3 +184,12 @@ Authorization: Bearer {{token}}
   "userId": 100,
   "pageNo": 1
 }
+
+### 笔记点赞入口
+POST http://localhost:8000/note/note/like
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": {{noteId}}
+}
