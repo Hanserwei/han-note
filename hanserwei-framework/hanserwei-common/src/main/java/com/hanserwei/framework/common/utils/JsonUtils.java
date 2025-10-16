@@ -1,11 +1,14 @@
 package com.hanserwei.framework.common.utils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 public class JsonUtils {
     private static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -50,5 +53,25 @@ public class JsonUtils {
         }
 
         return OBJECT_MAPPER.readValue(jsonStr, clazz);
+    }
+
+    /**
+     * 将 JSON 字符串转换为 Map
+     *
+     * @param jsonStr    JSON 字符串
+     * @param keyClass   键的类型
+     * @param valueClass 值的类型
+     * @param <K>        键的类型
+     * @param <V>        值的类型
+     * @return Map
+     * @throws Exception 抛出异常
+     */
+    public static <K, V> Map<K, V> parseMap(String jsonStr, Class<K> keyClass, Class<V> valueClass) throws Exception {
+        // 创建 TypeReference，指定泛型类型
+        TypeReference<Map<K, V>> typeRef = new TypeReference<Map<K, V>>() {
+        };
+
+        // 将 JSON 字符串转换为 Map
+        return OBJECT_MAPPER.readValue(jsonStr, OBJECT_MAPPER.getTypeFactory().constructMapType(Map.class, keyClass, valueClass));
     }
 }

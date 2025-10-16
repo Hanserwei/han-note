@@ -137,7 +137,7 @@ class MQTests {
             // 构建消息体 DTO
             CountFollowUnfollowMqDTO countFollowUnfollowMqDTO = CountFollowUnfollowMqDTO.builder()
                     .userId(i + 1) // 关注者用户 ID
-                    .targetUserId(27L) // 目标用户
+                    .targetUserId(100L) // 目标用户
                     .type(FollowUnfollowTypeEnum.FOLLOW.getCode())
                     .build();
 
@@ -146,15 +146,28 @@ class MQTests {
                     .build();
 
             // 发送 MQ 通知计数服务：统计粉丝数
-            rocketMQTemplate.asyncSend(MQConstants.TOPIC_COUNT_FANS, message, new SendCallback() {
+//            rocketMQTemplate.asyncSend(MQConstants.TOPIC_COUNT_FANS, message, new SendCallback() {
+//                @Override
+//                public void onSuccess(SendResult sendResult) {
+//                    log.info("==> 【计数服务：粉丝数】MQ 发送成功，SendResult: {}", sendResult);
+//                }
+//
+//                @Override
+//                public void onException(Throwable throwable) {
+//                    log.error("==> 【计数服务：粉丝数】MQ 发送异常: ", throwable);
+//                }
+//            });
+
+            // 发送 MQ 通知计数服务：统计关注数
+            rocketMQTemplate.asyncSend(MQConstants.TOPIC_COUNT_FOLLOWING, message, new SendCallback() {
                 @Override
                 public void onSuccess(SendResult sendResult) {
-                    log.info("==> 【计数服务：粉丝数】MQ 发送成功，SendResult: {}", sendResult);
+                    log.info("==> 【计数服务：关注数】MQ 发送成功，SendResult: {}", sendResult);
                 }
 
                 @Override
                 public void onException(Throwable throwable) {
-                    log.error("==> 【计数服务：粉丝数】MQ 发送异常: ", throwable);
+                    log.error("==> 【计数服务：关注数】MQ 发送异常: ", throwable);
                 }
             });
         }
