@@ -2,6 +2,7 @@ package com.hanserwei.hannote.user.relation.biz.consumer;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.util.concurrent.RateLimiter;
+import com.hanserwei.framework.common.utils.DateUtils;
 import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.user.relation.biz.constant.MQConstants;
 import com.hanserwei.hannote.user.relation.biz.constant.RedisKeyConstants;
@@ -13,7 +14,6 @@ import com.hanserwei.hannote.user.relation.biz.model.dto.FollowUserMqDTO;
 import com.hanserwei.hannote.user.relation.biz.model.dto.UnfollowUserMqDTO;
 import com.hanserwei.hannote.user.relation.biz.service.FansDOService;
 import com.hanserwei.hannote.user.relation.biz.service.FollowingDOService;
-import com.hanserwei.hannote.user.relation.biz.util.DateUtils;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -9,7 +9,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public enum NoteLikeLuaResultEnum {
     // 布隆过滤器不存在
-    BLOOM_NOT_EXIST(-1L),
+    NOT_EXIST(-1L),
+    // 笔记点赞成功
+    NOTE_LIKE_SUCCESS(0L),
     // 笔记已点赞
     NOTE_LIKED(1L),
     ;

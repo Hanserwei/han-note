@@ -14,4 +14,11 @@
     <!--@mbg.generated-->
     id, user_id, note_id, create_time, `status`
   </sql>
+
+  <insert id="insertOrUpdate" parameterType="com.hanserwei.hannote.note.biz.domain.dataobject.NoteLikeDO">
+      INSERT INTO t_note_like (user_id, note_id, create_time, status)
+      VALUES (#{userId}, #{noteId}, #{createTime}, #{status})
+      ON DUPLICATE KEY UPDATE
+      create_time = #{createTime}, status = #{status};
+    </insert>
 </mapper>
