@@ -732,6 +732,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         log.info("==> 【笔记取消点赞】Lua 脚本返回结果: {}", noteUnlikeLuaResultEnum);
         assert noteUnlikeLuaResultEnum != null;
         switch (noteUnlikeLuaResultEnum) {
+            // 布隆过滤器不存在
             case NOT_EXIST -> {
                 //笔记不存在
                 //异步初始化布隆过滤器
@@ -750,7 +751,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                     }
                 });
             }
-            case NOTE_LIKED -> throw new ApiException(ResponseCodeEnum.NOTE_NOT_LIKED);
+            // 布隆过滤器校验目标笔记未被点赞（判断绝对正确）
+            case NOTE_NOT_LIKED -> throw new ApiException(ResponseCodeEnum.NOTE_NOT_LIKED);
         }
 
         // 3. 能走到这里，说明布隆过滤器判断已点赞，直接删除 ZSET 中已点赞的笔记 ID
