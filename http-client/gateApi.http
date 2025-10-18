@@ -191,5 +191,14 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "id": {{noteId}}
+  "id": 1977249693272375330
+}
+
+### 笔记取消点赞入口
+POST http://localhost:8000/note/note/unlike
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 1977249693272375330
 }

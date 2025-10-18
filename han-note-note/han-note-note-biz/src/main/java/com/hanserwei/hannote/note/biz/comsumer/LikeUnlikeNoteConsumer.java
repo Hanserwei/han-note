@@ -1,11 +1,14 @@
 package com.hanserwei.hannote.note.biz.comsumer;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.util.concurrent.RateLimiter;
 import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.note.biz.constant.MQConstants;
 import com.hanserwei.hannote.note.biz.domain.dataobject.NoteLikeDO;
 import com.hanserwei.hannote.note.biz.domain.mapper.NoteLikeDOMapper;
+import com.hanserwei.hannote.note.biz.enums.LikeUnlikeNoteTypeEnum;
 import com.hanserwei.hannote.note.biz.model.dto.LikeUnlikeNoteMqDTO;
+import com.hanserwei.hannote.note.biz.service.NoteLikeDOService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.Message;
@@ -17,7 +20,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@SuppressWarnings("UnstableApiUsage")
+@SuppressWarnings({"UnstableApiUsage"})
 @Component
 @RocketMQMessageListener(
         consumerGroup = "han_note_" + MQConstants.TOPIC_LIKE_OR_UNLIKE,
@@ -31,6 +34,8 @@ public class LikeUnlikeNoteConsumer implements RocketMQListener<Message> {
     private final RateLimiter rateLimiter = RateLimiter.create(5000);
     @Resource
     private NoteLikeDOMapper noteLikeDOMapper;
+    @Resource
+    private NoteLikeDOService noteLikeDOService;
 
     @Override
     public void onMessage(Message message) {
@@ -60,7 +65,36 @@ public class LikeUnlikeNoteConsumer implements RocketMQListener<Message> {
      * @param bodyJsonStr 消息体
      */
     private void handleUnlikeNoteTagMessage(String bodyJsonStr) {
+        // 消息体 JSON 字符串转 DTO
+        LikeUnlikeNoteMqDTO unlikeNoteMqDTO = JsonUtils.parseObject(bodyJsonStr, LikeUnlikeNoteMqDTO.class);
+        if (Objects.isNull(unlikeNoteMqDTO)) {
+            return;
+        }
+        // 用户ID
+        Long userId = unlikeNoteMqDTO.getUserId();
+        // 点赞的笔记ID
+        Long noteId = unlikeNoteMqDTO.getNoteId();
+        // 操作类型
+        Integer type = unlikeNoteMqDTO.getType();
+        // 取消点赞时间
+        LocalDateTime createTime = unlikeNoteMqDTO.getCreateTime();
 
+        // 设置要更新的字段值
+        NoteLikeDO updateEntity = NoteLikeDO.builder()
+                .createTime(createTime) // 更新时间
+                .status(type) // 设置新的状态值 (例如 0 表示取消点赞)
+                .build();
+
+        // 设置更新条件：where user_id = [userId] and note_id = [noteId] and status = 1
+        LambdaQueryWrapper<NoteLikeDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(NoteLikeDO::getUserId, userId)
+                .eq(NoteLikeDO::getNoteId, noteId)
+                .eq(NoteLikeDO::getStatus, LikeUnlikeNoteTypeEnum.LIKE.getCode()); // 确保只更新当前为“已点赞”的记录
+
+        // 执行更新
+        boolean update = noteLikeDOService.update(updateEntity, wrapper);
+
+        // TODO: 删除计数
     }
 
     /**
