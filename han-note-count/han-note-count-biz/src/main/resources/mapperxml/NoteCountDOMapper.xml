@@ -14,4 +14,10 @@
     <!--@mbg.generated-->
     id, note_id, like_total, collect_total, comment_total
   </sql>
+
+    <insert id="insertOrUpdateLikeTotalByNoteId" parameterType="map">
+        INSERT INTO t_note_count (note_id, like_total)
+        VALUES (#{noteId}, #{count})
+        ON DUPLICATE KEY UPDATE like_total = like_total + (#{count});
+    </insert>
 </mapper>
