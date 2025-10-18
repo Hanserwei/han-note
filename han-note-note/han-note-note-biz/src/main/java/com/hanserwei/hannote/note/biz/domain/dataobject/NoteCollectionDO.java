@@ -4,11 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /**
  * 笔记收藏表
@@ -41,11 +42,11 @@ public class NoteCollectionDO {
      * 创建时间
      */
     @TableField(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 收藏状态(0：取消收藏 1：收藏)
      */
     @TableField(value = "`status`")
-    private Byte status;
+    private Integer status;
 }
