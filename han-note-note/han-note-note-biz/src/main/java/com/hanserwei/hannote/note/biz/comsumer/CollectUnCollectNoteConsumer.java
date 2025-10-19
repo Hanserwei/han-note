@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@SuppressWarnings("UnstableApiUsage")
+@SuppressWarnings({"UnstableApiUsage", "DuplicatedCode"})
 @Component
 @Slf4j
 @RocketMQMessageListener(
@@ -60,7 +60,32 @@ public class CollectUnCollectNoteConsumer implements RocketMQListener<Message> {
      * @param bodyJsonStr 消息体
      */
     private void handleUnCollectNoteTagMessage(String bodyJsonStr) {
+        // 消息体 JSON 字符串转 DTO
+        CollectUnCollectNoteMqDTO unCollectNoteMqDTO = JsonUtils.parseObject(bodyJsonStr, CollectUnCollectNoteMqDTO.class);
 
+        if (Objects.isNull(unCollectNoteMqDTO)) return;
+
+        // 用户ID
+        Long userId = unCollectNoteMqDTO.getUserId();
+        // 收藏的笔记ID
+        Long noteId = unCollectNoteMqDTO.getNoteId();
+        // 操作类型
+        Integer type = unCollectNoteMqDTO.getType();
+        // 收藏时间
+        LocalDateTime createTime = unCollectNoteMqDTO.getCreateTime();
+
+        // 构建 DO 对象
+        NoteCollectionDO noteCollectionDO = NoteCollectionDO.builder()
+                .userId(userId)
+                .noteId(noteId)
+                .createTime(createTime)
+                .status(type)
+                .build();
+
+        // 取消收藏：记录更新
+        int count = noteCollectionDOMapper.update2UnCollectByUserIdAndNoteId(noteCollectionDO);
+
+        // TODO: 发送计数 MQ
     }
 
     /**

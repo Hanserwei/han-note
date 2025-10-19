@@ -73,4 +73,12 @@ public interface NoteService extends IService<NoteDO> {
      */
     Response<?> collectNote(CollectNoteReqVO collectNoteReqVO);
 
+    /**
+     * 取消收藏笔记
+     *
+     * @param unCollectNoteReqVO 取消收藏笔记请求
+     * @return 取消收藏笔记结果
+     */
+    Response<?> unCollectNote(UnCollectNoteReqVO unCollectNoteReqVO);
+
 }

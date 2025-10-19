@@ -13,4 +13,12 @@ public interface NoteCollectionDOMapper extends BaseMapper<NoteCollectionDO> {
      * @return 是否成功
      */
     boolean insertOrUpdate(NoteCollectionDO noteCollectionDO);
+
+    /**
+     * 取消点赞
+     *
+     * @param noteCollectionDO 笔记收藏记录
+     * @return 影响行数
+     */
+    int update2UnCollectByUserIdAndNoteId(NoteCollectionDO noteCollectionDO);
 }

@@ -211,3 +211,12 @@ Authorization: Bearer {{token}}
 {
   "id": 1977249693272375330
 }
+
+### 笔记取消收藏入口
+POST http://localhost:8000/note/note/uncollect
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 1977249693272375330
+}
