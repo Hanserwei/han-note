@@ -43,4 +43,13 @@ public interface UserCountDOMapper extends BaseMapper<UserCountDO> {
      * @return 影响行数
      */
     int insertOrUpdateCollectTotalByUserId(@Param("count") Integer count, @Param("userId") Long userId);
+
+    /**
+     * 添加记录或更新笔记发布数
+     *
+     * @param count  笔记发布数
+     * @param userId 用户ID
+     * @return 影响行数
+     */
+    int insertOrUpdateNoteTotalByUserId(@Param("count") Long count, @Param("userId") Long userId);
 }

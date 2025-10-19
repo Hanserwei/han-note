@@ -77,8 +77,8 @@ Authorization: Bearer {{token}}
   "imgUris": [
     "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
   ],
-  "title": "图文笔记测试",
-  "content": "这个是图文笔记的测试",
+  "title": "第三篇图文笔记",
+  "content": "这个是第三篇图文笔记的测试",
   "topicId": 1
 }
 
@@ -118,6 +118,15 @@ Authorization: Bearer {{token}}
   "title": "笔记修改测试",
   "content": "我把图文笔记的内容修改了",
   "topicId": 1
+}
+
+### 删除笔记
+POST http://localhost:8000/note/note/delete
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 1979849112022941780
 }
 
 ### 关注自己
