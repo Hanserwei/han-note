@@ -571,7 +571,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
     public Response<?> likeNote(LikeNoteReqVO likeNoteReqVO) {
         Long noteId = likeNoteReqVO.getId();
         // 1. 校验被点赞的笔记是否存在
-        checkNoteIsExist(noteId);
+        Long creatorId = checkNoteIsExistAndGetCreatorId(noteId);
         // 2. 判断目标笔记，是否已经点赞过
         Long userId = LoginUserContextHolder.getUserId();
 
@@ -593,7 +593,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         switch (noteLikeLuaResultEnum) {
             // Redis 中布隆过滤器不存在
             case NOT_EXIST -> {
-                // TODO: 从数据库中校验笔记是否被点赞，并异步初始化布隆过滤器，设置过期时间
+                //从数据库中校验笔记是否被点赞，并异步初始化布隆过滤器，设置过期时间
                 long count = noteLikeDOService.count(new LambdaQueryWrapper<>(NoteLikeDO.class)
                         .eq(NoteLikeDO::getNoteId, noteId)
                         .eq(NoteLikeDO::getStatus, LikeStatusEnum.LIKE.getCode()));
@@ -689,6 +689,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 .noteId(noteId)
                 .type(LikeStatusEnum.LIKE.getCode()) // 点赞
                 .createTime(now)
+                .noteCreatorId(creatorId)
                 .build();
         // 构建消息，将DTO转换为JSON字符串设置到消息体中
         Message<String> message = MessageBuilder.withPayload(JsonUtils.toJsonString(likeUnlikeNoteMqDTO)).build();
@@ -717,7 +718,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         Long noteId = unlikeNoteReqVO.getId();
 
         // 1. 校验笔记是否真实存在
-        checkNoteIsExist(noteId);
+        Long creatorId = checkNoteIsExistAndGetCreatorId(noteId);
 
         // 2. 校验笔记是否被点赞过
         // 当前登录用户ID
@@ -774,6 +775,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 .noteId(noteId)
                 .type(LikeUnlikeNoteTypeEnum.UNLIKE.getCode()) // 取消点赞笔记
                 .createTime(LocalDateTime.now())
+                .noteCreatorId(creatorId)
                 .build();
 
         // 构建消息，将DTO转换为JSON字符串设置到消息体中
@@ -806,7 +808,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         Long noteId = collectNoteReqVO.getId();
 
         // 1. 校验被收藏的笔记是否存在
-        checkNoteIsExist(noteId);
+        Long creatorId = checkNoteIsExistAndGetCreatorId(noteId);
 
         // 2. 判断目标笔记，是否已经收藏过
         // 当前登录用户ID
@@ -828,8 +830,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
 
         NoteCollectLuaResultEnum noteCollectLuaResultEnum = NoteCollectLuaResultEnum.valueOf(result);
         log.info("==> 【笔记收藏】Lua 脚本返回结果: {}", noteCollectLuaResultEnum);
-        assert noteCollectLuaResultEnum != null;
-        switch (noteCollectLuaResultEnum) {
+        switch (Objects.requireNonNull(noteCollectLuaResultEnum)) {
             // 布隆过滤器不存在
             case NOT_EXIST -> {
                 // 从数据库中校验笔记是否被收藏，并异步初始化布隆过滤器，设置过期时间
@@ -932,6 +933,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 .noteId(noteId)
                 .type(CollectUnCollectNoteTypeEnum.COLLECT.getCode()) // 收藏笔记
                 .createTime(now)
+                .noteCreatorId(creatorId)
                 .build();
 
         // 构建消息对象，并将 DTO 转成 Json 字符串设置到消息体中
@@ -965,7 +967,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         Long noteId = unCollectNoteReqVO.getId();
 
         // 1. 校验笔记是否真实存在
-        checkNoteIsExist(noteId);
+        Long creatorId = checkNoteIsExistAndGetCreatorId(noteId);
 
         // 2. 校验笔记是否被收藏过
         // 当前登录用户ID
@@ -1021,6 +1023,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 .noteId(noteId)
                 .type(CollectUnCollectNoteTypeEnum.UN_COLLECT.getCode()) // 取消收藏笔记
                 .createTime(LocalDateTime.now())
+                .noteCreatorId(creatorId)
                 .build();
 
         // 构建消息对象，并将 DTO 转成 Json 字符串设置到消息体中
@@ -1238,17 +1241,17 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
     }
 
     /**
-     * 校验笔记是否存在
+     * 校验笔记是否存在，若存在，则获取笔记的发布者 ID
      *
      * @param noteId 笔记 ID
      */
-    private void checkNoteIsExist(Long noteId) {
+    private Long checkNoteIsExistAndGetCreatorId(Long noteId) {
         // 先从本地缓存中检验
         String findNoteDetailRspVOStrLocalCache = LOCAL_CACHE.getIfPresent(noteId);
         // 解析 JSON 为 FindNoteDetailRspVO
         FindNoteDetailRspVO findNoteDetailRspVO = JsonUtils.parseObject(findNoteDetailRspVOStrLocalCache, FindNoteDetailRspVO.class);
 
-        // 若缓存不存在
+        // 若本地缓存不存在
         if (Objects.isNull(findNoteDetailRspVO)) {
             // 从 Redis 中获取
             String noteDetailRedisKey = RedisKeyConstants.buildNoteDetailKey(noteId);
@@ -1260,10 +1263,15 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
             // 若 Redis 中不存在，则从数据库中获取
 
             if (Objects.isNull(findNoteDetailRspVO)) {
-                boolean isExist = this.exists(new LambdaQueryWrapper<>(NoteDO.class)
+                // 查询笔记的发布者用户 ID
+                NoteDO noteDO = this.getOne(new LambdaQueryWrapper<>(NoteDO.class)
+                        .select(NoteDO::getCreatorId)
                         .eq(NoteDO::getId, noteId)
                         .eq(NoteDO::getStatus, NoteStatusEnum.NORMAL.getCode()));
-                if (!isExist) {
+                // 笔记发布者用户 ID
+                Long creatorId = noteDO.getCreatorId();
+                // 若数据库中也不存在，提示用户
+                if (Objects.isNull(creatorId)) {
                     throw new ApiException(ResponseCodeEnum.NOTE_NOT_FOUND);
                 }
                 // 缓存
@@ -1271,8 +1279,11 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                     FindNoteDetailReqVO findNoteDetailReqVO = FindNoteDetailReqVO.builder().id(noteId).build();
                     findNoteDetail(findNoteDetailReqVO);
                 });
+                return creatorId;
             }
         }
+
+        return findNoteDetailRspVO.getCreatorId();
     }
 
     /**
