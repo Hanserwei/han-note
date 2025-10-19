@@ -15,7 +15,7 @@ import java.util.Map;
 
 @SuppressWarnings("ALL")
 @Component
-@RocketMQMessageListener(consumerGroup = "han_note_" + MQConstants.TOPIC_COUNT_FANS_2_DB, // Group 组
+@RocketMQMessageListener(consumerGroup = "han_note_group_" + MQConstants.TOPIC_COUNT_FANS_2_DB, // Group 组
         topic = MQConstants.TOPIC_COUNT_FANS_2_DB // 主题 Topic
 )
 @Slf4j

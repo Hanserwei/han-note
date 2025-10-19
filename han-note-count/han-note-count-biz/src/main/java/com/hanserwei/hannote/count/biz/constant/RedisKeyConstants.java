@@ -27,6 +27,11 @@ public class RedisKeyConstants {
     private static final String COUNT_NOTE_KEY_PREFIX = "count:note:";
 
     /**
+     * Hash Field: 笔记收藏总数
+     */
+    public static final String FIELD_COLLECT_TOTAL = "collectTotal";
+
+    /**
      * 构建用户维度计数 Key
      *
      * @param userId 用户ID

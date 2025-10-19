@@ -27,7 +27,7 @@ import java.util.Objects;
 @SuppressWarnings({"UnstableApiUsage"})
 @Component
 @RocketMQMessageListener(
-        consumerGroup = "han_note_" + MQConstants.TOPIC_LIKE_OR_UNLIKE,
+        consumerGroup = "han_note_group_" + MQConstants.TOPIC_LIKE_OR_UNLIKE,
         topic = MQConstants.TOPIC_LIKE_OR_UNLIKE,
         consumeMode = ConsumeMode.ORDERLY// 顺序消费
 )

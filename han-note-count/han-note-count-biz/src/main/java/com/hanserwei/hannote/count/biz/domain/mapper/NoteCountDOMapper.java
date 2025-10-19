@@ -16,4 +16,13 @@ public interface NoteCountDOMapper extends BaseMapper<NoteCountDO> {
      * @return 影响行数
      */
     int insertOrUpdateLikeTotalByNoteId(@Param("count") Integer count, @Param("noteId") Long noteId);
+
+    /**
+     * 添加记录或更新笔记收藏数
+     *
+     * @param count  收藏数
+     * @param noteId 笔记ID
+     * @return 影响行数
+     */
+    int insertOrUpdateCollectTotalByNoteId(@Param("count") Integer count, @Param("noteId") Long noteId);
 }
