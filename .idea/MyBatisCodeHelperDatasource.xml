@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MyBatisCodeHelperDatasource">
+    <option name="projectProfile">
+      <ProjectProfile>
+        <option name="controllerTemplateString" value="&#10;#* @vtlvariable name=&quot;tableName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;entityPackageName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;entityClassName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;servicePackageName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;serviceInterfacePackage&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;serviceClassName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;serviceInterfaceClassName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;mapperPackageName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;mapperClassName&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;controllerPackage&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;tableRemark&quot; type=&quot;java.lang.String&quot; *#&#10;#* @vtlvariable name=&quot;myDate&quot; type=&quot;java.util.Date&quot; *#&#10;#* @vtlvariable name=&quot;simpleDateFormat&quot; type=&quot;java.text.SimpleDateFormat&quot; *#&#10;package $!{controllerPackage};&#10;import $!{entityPackageName}.$!{entityClassName};&#10;###set($realServiceName = $!{serviceClassName}+'Impl')&#10;import $!{servicePackageName}.$!{serviceClassName};&#10;import org.springframework.web.bind.annotation.*;&#10;&#10;#set($serviceFirstLower = $!{serviceClassName.substring(0,1).toLowerCase()}+$!{serviceClassName.substring(1,$!{serviceClassName.length()})})&#10;import org.springframework.beans.factory.annotation.Autowired;&#10;&#10;/**&#10;* $!{tableRemark}($!{tableName})表控制层&#10;*&#10;* @author xxxxx&#10;*/&#10;@RestController&#10;@RequestMapping(&quot;/$!{tableName}&quot;)&#10;public class $!{entityClassName}Controller {&#10;/**&#10;* 服务对象&#10;*/&#10;    @Autowired&#10;    private $!{serviceClassName} $!{serviceFirstLower};&#10;&#10;    /**&#10;    * 通过主键查询单条数据&#10;    *&#10;    * @param id 主键&#10;    * @return 单条数据&#10;    */&#10;    @GetMapping(&quot;selectOne&quot;)&#10;    public $!{entityClassName} selectOne(Integer id) {&#10;    return $!{serviceFirstLower}.selectByPrimaryKey(id);&#10;    }&#10;&#10;}" />
+        <option name="customizedLombokAnnotation" value="true" />
+        <option name="customizedLombokValue" value="@lombok.Builder" />
+        <option name="deleteByPrimayKeyEnabled" value="false" />
+        <option name="generateService" value="true" />
+        <option name="generateServiceInterface" value="true" />
+        <option name="insertMethodEnabled" value="false" />
+        <option name="insertSelectiveMethodEnabled" value="false" />
+        <option name="javaMapperPackage" value="com.hanserwei.hannote.note.biz.domain.mapper" />
+        <option name="javaMapperPath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/java" />
+        <option name="javaModelPackage" value="com.hanserwei.hannote.note.biz.domain.dataobject" />
+        <option name="javaModelPath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/java" />
+        <option name="lastDatabaseCrudChooseModuleName" value="han-note-note-biz" />
+        <option name="lombokAllArgConstructor" value="true" />
+        <option name="lombokDataAnnotation" value="true" />
+        <option name="lombokNoArgsConstructor" value="true" />
+        <option name="mapperAnnotaion" value="true" />
+        <option name="mapperFilesFolder" value="$PROJECT_DIR$/han-note-auth/src/main/resources/mapperxml" />
+        <option name="mapperFilesFolderList">
+          <list>
+            <option value="$PROJECT_DIR$/han-note-auth/src/main/resources/mapperxml" />
+          </list>
+        </option>
+        <option name="moduleNameToPackageAndPathMap">
+          <map>
+            <entry key="han-note-auth">
+              <value>
+                <UserPackageAndPathInfoByModule>
+                  <option name="javaMapperPackage" value="com.hanserwei.hannote.count.biz.domain.mapper" />
+                  <option name="javaMapperPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="javaModelPacakge" value="com.hanserwei.hannote.count.biz.domain.dataobject" />
+                  <option name="javaModelPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="javaServiceInterfacePackage" value="com.hanserwei.hannote.count.biz.service" />
+                  <option name="javaServiceInterfacePath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="javaServicePackage" value="com.hanserwei.hannote.count.biz.service.impl" />
+                  <option name="javaServicePath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="xmlPackage" value="mapperxml" />
+                  <option name="xmlPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/resources" />
+                </UserPackageAndPathInfoByModule>
+              </value>
+            </entry>
+            <entry key="han-note-count-biz">
+              <value>
+                <UserPackageAndPathInfoByModule>
+                  <option name="javaMapperPackage" value="com.hanserwei.hannote.count.biz.domain.mapper" />
+                  <option name="javaMapperPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="javaModelPacakge" value="com.hanserwei.hannote.count.biz.domain.dataobject" />
+                  <option name="javaModelPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="javaServiceInterfacePackage" value="com.hanserwei.hannote.count.biz.service" />
+                  <option name="javaServiceInterfacePath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="javaServicePackage" value="com.hanserwei.hannote.count.biz.service.impl" />
+                  <option name="javaServicePath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+                  <option name="xmlPackage" value="mapperxml" />
+                  <option name="xmlPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/resources" />
+                </UserPackageAndPathInfoByModule>
+              </value>
+            </entry>
+            <entry key="han-note-note-biz">
+              <value>
+                <UserPackageAndPathInfoByModule>
+                  <option name="javaMapperPackage" value="com.hanserwei.hannote.note.biz.domain.mapper" />
+                  <option name="javaMapperPath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/java" />
+                  <option name="javaModelPacakge" value="com.hanserwei.hannote.note.biz.domain.dataobject" />
+                  <option name="javaModelPath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/java" />
+                  <option name="javaServiceInterfacePackage" value="com.hanserwei.hannote.note.biz.service" />
+                  <option name="javaServiceInterfacePath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/java" />
+                  <option name="javaServicePackage" value="com.hanserwei.hannote.note.biz.service.impl" />
+                  <option name="javaServicePath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/java" />
+                  <option name="xmlPackage" value="mapperxml" />
+                  <option name="xmlPath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/resources" />
+                </UserPackageAndPathInfoByModule>
+              </value>
+            </entry>
+          </map>
+        </option>
+        <option name="mybatisPlusIdType" value="AUTO" />
+        <option name="selectByPrimaryKeyEnabled" value="false" />
+        <option name="tableGenerateConfigs">
+          <map>
+            <entry key="han_note:t_channel">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="ChannelDO" />
+                  <option name="moduleName" value="han-note-note-biz" />
+                  <option name="mybatisplusIdType" value="ASSIGN_ID" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_channel_topic_rel">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="ChannelTopicRelDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_fans">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="FansDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_following">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="FollowingDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_note">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="NoteDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_note_collection">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="NoteCollectionDO" />
+                  <option name="moduleName" value="han-note-note-biz" />
+                  <option name="mybatisplusIdType" value="ASSIGN_ID" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_note_count">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="NoteCountDO" />
+                  <option name="moduleName" value="han-note-count-biz" />
+                  <option name="mybatisplusIdType" value="ASSIGN_ID" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_note_like">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="NoteLikeDO" />
+                  <option name="moduleName" value="han-note-note-biz" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_permission">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="PermissionDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_role">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="RoleDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_role_permission_rel">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="RolePermissionDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_topic">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="TopicDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_user">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="UserDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="ASSIGN_ID" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_user_count">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="UserCountDO" />
+                  <option name="moduleName" value="han-note-count-biz" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="han_note:t_user_role_rel">
+              <value>
+                <TableGenerateConfig>
+                  <option name="deleteByPrimayKeyEnabled" value="false" />
+                  <option name="generatedKey" value="id" />
+                  <option name="insertMethodEnabled" value="false" />
+                  <option name="insertSelectiveMethodEnabled" value="false" />
+                  <option name="javaModelName" value="UserRoleDO" />
+                  <option name="moduleName" value="han-note-auth" />
+                  <option name="mybatisplusIdType" value="AUTO" />
+                  <option name="selectByPrimaryKeyEnabled" value="false" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+                  <option name="updateByPrimaykeyEnabled" value="false" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+          </map>
+        </option>
+        <option name="updateByPrimaryKeySelectiveEnabled" value="false" />
+        <option name="updateByPrimaykeyEnabled" value="false" />
+        <option name="userMybatisPlus" value="true" />
+        <option name="xmlMapperPackage" value="mapperxml" />
+        <option name="xmlMapperPath" value="$PROJECT_DIR$/han-note-note/han-note-note-biz/src/main/resources" />
+      </ProjectProfile>
+    </option>
+  </component>
+</project>

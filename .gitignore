@@ -1,13 +1,31 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
+# -----------------------------------------------------------------------------
+# 构建产物和依赖
+# -----------------------------------------------------------------------------
+target/                               # Maven 默认的编译输出目录
+**/target/
+!.mvn/wrapper/maven-wrapper.jar       # 保留 Maven Wrapper jar 包
+!**/src/main/**/target/               # 排除 src/main 下的 target 目录，但如果上面的 target/ 已经生效，这行可能冗余，但安全起见保留
+!**/src/test/**/target/               # 排除 src/test 下的 target 目录
+
+/build/                               # Gradle 默认的编译输出目录
+!**/src/main/**/build/                # 排除 src/main 下的 build 目录
+!**/src/test/**/build/                # 排除 src/test 下的 build 目录
+/dist/                                # NetBeans / 通用分发目录
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# -----------------------------------------------------------------------------
+# IDE 配置文件
+# -----------------------------------------------------------------------------
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
+.idea/                                # IntelliJ IDEA 配置目录
+# 保留某些重要的 IDEA 文件 (如果需要，但通常 .idea/ 排除足够)
+!.idea/modules.xml
+!.idea/jarRepositories.xml
+!.idea/compiler.xml
+# 排除掉不需要的版本控制的文件
 .idea/libraries/
 *.iws
 *.iml
@@ -24,31 +42,31 @@ target/
 
 ### NetBeans ###
 /nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
-.DS_Store
-/.idea/
-/han-note-auth/src/main/resources/application-dev.yml
-/han-note-auth/src/main/resources/application-prod.yml
-/han-note-auth/logs/
-/logs/
-/han-note-oss/han-note-oss-biz/src/main/resources/application-dev.yml
-/han-note-user/han-note-user-biz/src/main/resources/application-dev.yml
-/han-note-user/han-note-user-biz/logs/
-/han-note-kv/han-note-kv-biz/src/main/resources/application-dev.yml
-/han-note-kv/han-note-kv-biz/src/main/resources/application-prod.yml
-/han-note-kv/han-note-kv-biz/logs/
-/han-note-note/han-note-note-biz/src/main/resources/application-dev.yml
-/han-note-user-relation/han-note-user-relation-biz/src/main/resources/application-dev.yml
-/han-note-user-relation/han-note-user-relation-biz/logs/
-/han-note-count/han-note-count-biz/src/main/resources/application-dev.yml
+# -----------------------------------------------------------------------------
+# OS/平台文件
+# -----------------------------------------------------------------------------
+.DS_Store                             # Mac OS X
+# .idea/ (已在 IDEA 部分排除，但 Mac 用户有时会在项目根目录生成一个隐藏的 .idea 文件夹)
+
+# -----------------------------------------------------------------------------
+# 语言特定文件
+# -----------------------------------------------------------------------------
+.kotlin                               # Kotlin 缓存文件
+
+# -----------------------------------------------------------------------------
+# 自定义应用配置文件和日志 (重点优化部分)
+# -----------------------------------------------------------------------------
+
+# 排除所有模块的 logs/ 目录
+*/logs/
+# 统一排除所有模块的日志目录（如果上面的 *\/logs/ 不够全面）
+logs/
+
+# 排除所有 application-dev.yml 和 application-prod.yml
+# 这种方式更简洁，排除所有环境的本地配置，统一管理
+application-dev.yml
+application-prod.yml

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+      </profile>
+      <profile name="Annotation profile for han-note" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="han-note-oss-biz" />
+        <module name="han-note-count-api" />
+        <module name="han-note-oss-api" />
+        <module name="han-note-count-biz" />
+        <module name="hanserwei-spring-boot-starter-biz-operationlog" />
+        <module name="han-note-gateway" />
+        <module name="han-note-note-api" />
+        <module name="hanserwei-spring-boot-starter-jackson" />
+        <module name="han-note-distributed-id-generator-api" />
+        <module name="han-note-data-align" />
+        <module name="han-note-kv-api" />
+        <module name="han-note-note-biz" />
+        <module name="han-note-user-relation-api" />
+        <module name="han-note-user-api" />
+        <module name="han-note-user-biz" />
+        <module name="han-note-kv-biz" />
+        <module name="hanserwei-common" />
+        <module name="han-note-distributed-id-generator-biz" />
+        <module name="han-note-auth" />
+        <module name="han-note-user-relation-biz" />
+        <module name="hanserwei-spring-boot-starter-biz-context" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hanserwei-spring-starter-biz-context" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="han-note-auth" options="" />
+    </option>
+  </component>
+</project>
