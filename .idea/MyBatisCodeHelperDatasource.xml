@@ -20,10 +20,11 @@
         <option name="lombokDataAnnotation" value="true" />
         <option name="lombokNoArgsConstructor" value="true" />
         <option name="mapperAnnotaion" value="true" />
-        <option name="mapperFilesFolder" value="$PROJECT_DIR$/han-note-auth/src/main/resources/mapperxml" />
+        <option name="mapperFilesFolder" value="$PROJECT_DIR$/han-note-data-align/src/main/resources/mapperxml" />
         <option name="mapperFilesFolderList">
           <list>
             <option value="$PROJECT_DIR$/han-note-auth/src/main/resources/mapperxml" />
+            <option value="$PROJECT_DIR$/han-note-data-align/src/main/resources/mapperxml" />
           </list>
         </option>
         <option name="moduleNameToPackageAndPathMap">
