@@ -792,26 +792,24 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
 
         NoteUnlikeLuaResultEnum noteUnlikeLuaResultEnum = NoteUnlikeLuaResultEnum.valueOf(result);
         log.info("==> 【笔记取消点赞】Lua 脚本返回结果: {}", noteUnlikeLuaResultEnum);
-        assert noteUnlikeLuaResultEnum != null;
-        switch (noteUnlikeLuaResultEnum) {
+        switch (Objects.requireNonNull(noteUnlikeLuaResultEnum)) {
             // 布隆过滤器不存在
-            case NOT_EXIST -> {
-                //笔记不存在
+            case NOT_EXIST -> {//笔记不存在
                 //异步初始化布隆过滤器
                 threadPoolTaskExecutor.submit(() -> {
                     // 保底1天+随机秒数
                     long expireSeconds = 60 * 60 * 24 + RandomUtil.randomInt(60 * 60 * 24);
                     batchAddNoteLike2BloomAndExpire(userId, expireSeconds, bloomUserNoteLikeListKey);
-                    // 从数据库中校验笔记是否被点赞
-                    long count = noteLikeDOService.count(new LambdaQueryWrapper<>(NoteLikeDO.class)
-                            .eq(NoteLikeDO::getUserId, userId)
-                            .eq(NoteLikeDO::getNoteId, noteId)
-                            .eq(NoteLikeDO::getStatus, LikeStatusEnum.LIKE.getCode()));
-                    if (count == 0) {
-                        log.info("==> 【笔记取消点赞】用户未点赞该笔记");
-                        throw new ApiException(ResponseCodeEnum.NOTE_NOT_LIKED);
-                    }
                 });
+                // 从数据库中校验笔记是否被点赞
+                long count = noteLikeDOService.count(new LambdaQueryWrapper<>(NoteLikeDO.class)
+                        .eq(NoteLikeDO::getUserId, userId)
+                        .eq(NoteLikeDO::getNoteId, noteId)
+                        .eq(NoteLikeDO::getStatus, LikeStatusEnum.LIKE.getCode()));
+                if (count == 0) {
+                    log.info("==> 【笔记取消点赞】用户未点赞该笔记");
+                    throw new ApiException(ResponseCodeEnum.NOTE_NOT_LIKED);
+                }
             }
             // 布隆过滤器校验目标笔记未被点赞（判断绝对正确）
             case NOTE_NOT_LIKED -> throw new ApiException(ResponseCodeEnum.NOTE_NOT_LIKED);
@@ -821,7 +819,14 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         // 用户点赞列表ZsetKey
         String userNoteLikeZSetKey = RedisKeyConstants.buildUserNoteLikeZSetKey(userId);
 
-        redisTemplate.opsForZSet().remove(userNoteLikeZSetKey, noteId);
+        // TODO: 后续考虑换掉布隆过滤器。
+
+        Long removed = redisTemplate.opsForZSet().remove(userNoteLikeZSetKey, noteId);
+
+        if (Objects.nonNull(removed) && removed == 0) {
+            log.info("==> 【笔记取消点赞】用户未点赞该笔记");
+            throw new ApiException(ResponseCodeEnum.NOTE_NOT_LIKED);
+        }
 
         //4. 发送 MQ, 数据更新落库
         // 构建MQ消息体
@@ -932,7 +937,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
             }
         }
 
-        // 3. 更新用户 ZSET 收藏列表
         // 3. 更新用户 ZSET 收藏列表
         LocalDateTime now = LocalDateTime.now();
         // Lua 脚本路径
@@ -1271,11 +1275,14 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
      */
     private void batchAddNoteLike2BloomAndExpire(Long userId, long expireSeconds, String bloomUserNoteLikeListKey) {
         try {
+            log.info("## 异步初始化【笔记点赞】布隆过滤器开始: userId={}", userId);
             // 异步全量同步一下，并设置过期时间
             List<NoteLikeDO> noteLikeDOS = noteLikeDOService.list(new LambdaQueryWrapper<>(NoteLikeDO.class)
                     .select(NoteLikeDO::getNoteId)
                     .eq(NoteLikeDO::getUserId, userId)
                     .eq(NoteLikeDO::getStatus, LikeStatusEnum.LIKE.getCode()));
+            log.info("## 异步初始化【笔记点赞】布隆过滤器，用户笔记点赞数量: {},笔记ID:{}", noteLikeDOS.size(),
+                    JsonUtils.toJsonString(noteLikeDOS.stream().map(NoteLikeDO::getNoteId).toList()));
 
             if (CollUtil.isNotEmpty(noteLikeDOS)) {
                 DefaultRedisScript<Long> script = new DefaultRedisScript<>();
@@ -1288,7 +1295,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 List<Object> luaArgs = Lists.newArrayList();
                 noteLikeDOS.forEach(noteLikeDO -> luaArgs.add(noteLikeDO.getNoteId())); // 将每个点赞的笔记 ID 传入
                 luaArgs.add(expireSeconds);  // 最后一个参数是过期时间（秒）
-                redisTemplate.execute(script, Collections.singletonList(bloomUserNoteLikeListKey), luaArgs.toArray());
+                Long result = redisTemplate.execute(script, Collections.singletonList(bloomUserNoteLikeListKey), luaArgs.toArray());
+                log.info("## 异步初始化【笔记点赞】布隆过滤器结果: {}", result);
             }
         } catch (Exception e) {
             log.error("## 异步初始化布隆过滤器异常: ", e);

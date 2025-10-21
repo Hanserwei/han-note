@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Objects;
 
+@SuppressWarnings("UnstableApiUsage")
 @Component
 @RocketMQMessageListener(
         consumerGroup = "han_note_group_" + MQConstants.TOPIC_FOLLOW_OR_UNFOLLOW, //han_note_group_FollowUnfollowTopic

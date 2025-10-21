@@ -99,6 +99,7 @@ public class LikeUnlikeNoteConsumer implements RocketMQListener<Message> {
 
         // 执行更新
         boolean update = noteLikeDOService.update(updateEntity, wrapper);
+        log.info("==> 【取消点赞笔记】更新数据库成功，update: {}", update);
 
         if (!update) {
             return;

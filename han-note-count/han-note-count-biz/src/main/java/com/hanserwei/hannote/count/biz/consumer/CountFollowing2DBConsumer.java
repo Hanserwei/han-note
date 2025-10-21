@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Component
 @SuppressWarnings("ALL")
-@RocketMQMessageListener(consumerGroup = "han_note_" + MQConstants.TOPIC_COUNT_FOLLOWING_2_DB, // Group 组
+@RocketMQMessageListener(consumerGroup = "han_note_group_" + MQConstants.TOPIC_COUNT_FOLLOWING_2_DB, // Group 组
         topic = MQConstants.TOPIC_COUNT_FOLLOWING_2_DB // 主题 Topic
 )
 @Slf4j
