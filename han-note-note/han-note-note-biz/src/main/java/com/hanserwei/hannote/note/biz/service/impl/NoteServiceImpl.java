@@ -465,7 +465,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         String contentUuid = noteDO1.getContentUuid();
 
         // 笔记内容是否更新成功
-        boolean isUpdateContentSuccess = false;
+        boolean isUpdateContentSuccess;
         if (StringUtils.isBlank(content)) {
             // 若笔记内容为空，则删除 K-V 存储
             isUpdateContentSuccess = keyValueRpcService.deleteNoteContent(contentUuid);
@@ -904,9 +904,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 // 若目标笔记已经收藏
                 if (count > 0) {
                     // 异步初始化布隆过滤器
-                    threadPoolTaskExecutor.submit(() -> {
-                        batchAddNoteCollect2BloomAndExpire(userId, expireSeconds, bloomUserNoteCollectListKey);
-                    });
+                    threadPoolTaskExecutor.submit(() -> batchAddNoteCollect2BloomAndExpire(userId, expireSeconds, bloomUserNoteCollectListKey));
                     throw new ApiException(ResponseCodeEnum.NOTE_ALREADY_COLLECTED);
                 }
                 // 若目标笔记未被收藏，查询当前用户是否有收藏其他笔记，有则同步初始化布隆过滤器
@@ -1037,7 +1035,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
 
         DefaultRedisScript<Long> script = new DefaultRedisScript<>();
         // Lua 脚本路径
-        script.setScriptSource(new ResourceScriptSource(new ClassPathResource("/lua/bloom_note_uncollect_check.lua")));
+        script.setScriptSource(new ResourceScriptSource(new ClassPathResource("/lua/bloom_note_uncollected_check.lua")));
         // 返回值类型
         script.setResultType(Long.class);
 
@@ -1073,7 +1071,10 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
         // 用户收藏列表 ZSet Key
         String userNoteCollectZSetKey = RedisKeyConstants.buildUserNoteCollectZSetKey(userId);
 
-        redisTemplate.opsForZSet().remove(userNoteCollectZSetKey, noteId);
+        Long removed = redisTemplate.opsForZSet().remove(userNoteCollectZSetKey, noteId);
+        if (removed != null && removed == 0) {
+            throw new ApiException(ResponseCodeEnum.NOTE_NOT_COLLECTED);
+        }
 
         // 4. 发送 MQ, 数据更新落库
         // 构建消息体 DTO
