@@ -5,13 +5,16 @@ import com.hanserwei.hannote.data.align.domain.mapper.CreateTableMapper;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @Component
 @RefreshScope
 @SuppressWarnings("unused")
@@ -25,6 +28,9 @@ public class CreateTableXxlJob {
      */
     @Value("${table.shards}")
     private int tableShards;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
     /**
      * 1、简单任务示例（Bean模式）
@@ -41,15 +47,24 @@ public class CreateTableXxlJob {
                 // 表名后缀
                 String tableNameSuffix = TableConstants.buildTableNameSuffix(date, hashKey);
 
-                // 创建表
-                // 创建表
-                createTableMapper.createDataAlignFollowingCountTempTable(tableNameSuffix);
-                createTableMapper.createDataAlignFansCountTempTable(tableNameSuffix);
-                createTableMapper.createDataAlignNoteCollectCountTempTable(tableNameSuffix);
-                createTableMapper.createDataAlignUserCollectCountTempTable(tableNameSuffix);
-                createTableMapper.createDataAlignUserLikeCountTempTable(tableNameSuffix);
-                createTableMapper.createDataAlignNoteLikeCountTempTable(tableNameSuffix);
-                createTableMapper.createDataAlignNotePublishCountTempTable(tableNameSuffix);
+                transactionTemplate.execute(status -> {
+                    try {
+                        // 创建表
+                        createTableMapper.createDataAlignFollowingCountTempTable(tableNameSuffix);
+                        createTableMapper.createDataAlignFansCountTempTable(tableNameSuffix);
+                        createTableMapper.createDataAlignNoteCollectCountTempTable(tableNameSuffix);
+                        createTableMapper.createDataAlignUserCollectCountTempTable(tableNameSuffix);
+                        createTableMapper.createDataAlignUserLikeCountTempTable(tableNameSuffix);
+                        createTableMapper.createDataAlignNoteLikeCountTempTable(tableNameSuffix);
+                        createTableMapper.createDataAlignNotePublishCountTempTable(tableNameSuffix);
+                        return true;
+                    } catch (Exception e) {
+                        status.setRollbackOnly();
+                        log.error("创建表失败", e);
+                    }
+                    return false;
+                });
+
             }
         }
         XxlJobHelper.log("## 创建日增量数据表成功，表名后缀: {}...", date);

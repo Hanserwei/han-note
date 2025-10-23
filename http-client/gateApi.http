@@ -77,8 +77,8 @@ Authorization: Bearer {{token}}
   "imgUris": [
     "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
   ],
-  "title": "第三篇图文笔记",
-  "content": "这个是第三篇图文笔记的测试",
+  "title": "测试数据对齐图文笔记5",
+  "content": "测试数据对齐测试数据对齐测试数据对齐测试5",
   "topicId": 1
 }
 
@@ -126,7 +126,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "id": 1979849112022941780
+  "id": 1981322504056078370
 }
 
 ### 关注自己
@@ -153,7 +153,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "followUserId": {{otherUserId}}
+  "followUserId": 2100
 }
 
 ### 取消关注
