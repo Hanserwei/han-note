@@ -651,6 +651,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteDOMapper, NoteDO> implement
                 //从数据库中校验笔记是否被点赞，并异步初始化布隆过滤器，设置过期时间
                 long count = noteLikeDOService.count(new LambdaQueryWrapper<>(NoteLikeDO.class)
                         .eq(NoteLikeDO::getNoteId, noteId)
+                        .eq(NoteLikeDO::getUserId, userId)
                         .eq(NoteLikeDO::getStatus, LikeStatusEnum.LIKE.getCode()));
 
                 // 保底1天+随机秒数

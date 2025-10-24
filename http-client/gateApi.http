@@ -77,8 +77,8 @@ Authorization: Bearer {{token}}
   "imgUris": [
     "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
   ],
-  "title": "测试数据对齐图文笔记5",
-  "content": "测试数据对齐测试数据对齐测试数据对齐测试5",
+  "title": "bug修复2",
+  "content": "bugbugbug",
   "topicId": 1
 }
 
@@ -197,16 +197,16 @@ Authorization: Bearer {{token}}
 ### 笔记点赞入口
 POST http://localhost:8000/note/note/like
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{thirdToken}}
 
 {
-  "id": 1977249693272375330
+  "id": 1981698494959714362
 }
 
 ### 笔记取消点赞入口
 POST http://localhost:8000/note/note/unlike
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{otherToken}}
 
 {
   "id": 1977249693272375330
@@ -215,16 +215,16 @@ Authorization: Bearer {{token}}
 ### 笔记收藏入口
 POST http://localhost:8000/note/note/collect
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{thirdToken}}
 
 {
-  "id": 1977249693272375330
+  "id": 1981698494959714362
 }
 
 ### 笔记取消收藏入口
 POST http://localhost:8000/note/note/uncollect
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{otherToken}}
 
 {
   "id": 1977249693272375330

@@ -34,7 +34,7 @@ public class FollowingCountShardingXxlJob {
      * 分片广播任务
      */
     @XxlJob("followingCountShardingJobHandler")
-    public void followingCountShardingJobHandler() throws Exception {
+    public void followingCountShardingJobHandler() {
         // 获取分片参数
         // 分片序号
         int shardIndex = XxlJobHelper.getShardIndex();
