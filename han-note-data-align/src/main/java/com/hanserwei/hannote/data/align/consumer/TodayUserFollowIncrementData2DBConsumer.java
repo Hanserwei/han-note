@@ -4,7 +4,7 @@ import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.data.align.constant.MQConstants;
 import com.hanserwei.hannote.data.align.constant.RedisKeyConstants;
 import com.hanserwei.hannote.data.align.constant.TableConstants;
-import com.hanserwei.hannote.data.align.domain.mapper.InsertRecordMapper;
+import com.hanserwei.hannote.data.align.domain.mapper.InsertMapper;
 import com.hanserwei.hannote.data.align.model.vo.FollowUnfollowMqDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class TodayUserFollowIncrementData2DBConsumer implements RocketMQListener
     private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
-    private InsertRecordMapper insertRecordMapper;
+    private InsertMapper insertMapper;
 
     /**
      * 表总分片数
@@ -90,7 +90,7 @@ public class TodayUserFollowIncrementData2DBConsumer implements RocketMQListener
 
             try {
                 // 将日增量变更数据，写入表 t_data_align_following_count_temp_日期_分片序号
-                insertRecordMapper.insert2DataAlignUserFollowingCountTempTable(
+                insertMapper.insert2DataAlignUserFollowingCountTempTable(
                         TableConstants.buildTableNameSuffix(date, userIdHashKey), userId);
             } catch (Exception e) {
                 log.error("", e);
@@ -115,7 +115,7 @@ public class TodayUserFollowIncrementData2DBConsumer implements RocketMQListener
 
             try {
                 // 将日增量变更数据，写入表 t_data_align_fans_count_temp_日期_分片序号
-                insertRecordMapper.insert2DataAlignUserFansCountTempTable(
+                insertMapper.insert2DataAlignUserFansCountTempTable(
                         TableConstants.buildTableNameSuffix(date, targetUserIdHashKey), targetUserId);
             } catch (Exception e) {
                 log.error("", e);

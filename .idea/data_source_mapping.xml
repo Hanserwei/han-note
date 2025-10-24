@@ -3,7 +3,8 @@
   <component name="DataSourcePerFileMappings">
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/5b969fbe-0f66-42be-8d30-ff21036ab8a4/console.sql" value="5b969fbe-0f66-42be-8d30-ff21036ab8a4" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/f2474a4a-e4f1-4afa-bd43-7ae7738b47c5/console.sql" value="f2474a4a-e4f1-4afa-bd43-7ae7738b47c5" />
-    <file url="file://$PROJECT_DIR$/han-note-data-align/src/main/resources/mapperxml/InsertRecordMapper.xml" value="f2474a4a-e4f1-4afa-bd43-7ae7738b47c5" />
+    <file url="file://$PROJECT_DIR$/han-note-data-align/src/main/resources/mapperxml/InsertMapper.xml" value="f2474a4a-e4f1-4afa-bd43-7ae7738b47c5" />
+    <file url="file://$PROJECT_DIR$/han-note-data-align/src/main/resources/mapperxml/SelectRecordMapper.xml" value="f2474a4a-e4f1-4afa-bd43-7ae7738b47c5" />
     <file url="file://$PROJECT_DIR$/sql/createData.sql" value="f2474a4a-e4f1-4afa-bd43-7ae7738b47c5" />
     <file url="file://$PROJECT_DIR$/sql/createTable.sql" value="f2474a4a-e4f1-4afa-bd43-7ae7738b47c5" />
     <file url="file://$PROJECT_DIR$/sql/leafcreatetable.sql" value="c4c1f1dc-816f-4113-88d6-9ebd7677af82" />

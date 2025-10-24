@@ -4,7 +4,7 @@ import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.data.align.constant.MQConstants;
 import com.hanserwei.hannote.data.align.constant.RedisKeyConstants;
 import com.hanserwei.hannote.data.align.constant.TableConstants;
-import com.hanserwei.hannote.data.align.domain.mapper.InsertRecordMapper;
+import com.hanserwei.hannote.data.align.domain.mapper.InsertMapper;
 import com.hanserwei.hannote.data.align.model.vo.NoteOperateMqDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class TodayNotePublishIncrementData2DBConsumer implements RocketMQListene
     private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
-    private InsertRecordMapper insertRecordMapper;
+    private InsertMapper insertMapper;
 
     /**
      * 表总分片数
@@ -81,7 +81,7 @@ public class TodayNotePublishIncrementData2DBConsumer implements RocketMQListene
 
             // 将日增量变更数据，写入日增量表中
             // - t_data_align_note_publish_count_temp_日期_分片序号
-            insertRecordMapper.insert2DataAlignUserNotePublishCountTempTable(TableConstants.buildTableNameSuffix(date, userIdHashKey), noteCreatorId);
+            insertMapper.insert2DataAlignUserNotePublishCountTempTable(TableConstants.buildTableNameSuffix(date, userIdHashKey), noteCreatorId);
 
             // 3. 数据库写入成功后，再添加布隆过滤器中
             RedisScript<Long> bloomAddScript = RedisScript.of("return redis.call('BF.ADD', KEYS[1], ARGV[1])", Long.class);
