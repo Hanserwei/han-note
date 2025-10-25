@@ -6,4 +6,40 @@
         set following_total = #{followingTotal}
         where user_id = #{userId}
     </update>
+
+    <update id="updateUserFansTotalByUserId" parameterType="map">
+        update t_user_count
+        set fans_total = #{fansTotal}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserCollectTotalByUserId" parameterType="map">
+        update t_user_count
+        set collect_total = #{userCollectTotal}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserNotePublishTotalByUserId" parameterType="map">
+        update t_user_count
+        set note_total = #{notePublishTotal}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateNoteLikeTotalByNoteId" parameterType="map">
+        update t_note_count
+        set like_total = #{noteLikeTotal}
+        where note_id = #{noteId}
+    </update>
+
+    <update id="updateNoteCollectTotalByNoteId" parameterType="map">
+        update t_note_count
+        set collect_total = #{noteCollectTotal}
+        where note_id = #{noteId}
+    </update>
+
+    <update id="updateUserLikeTotalByUserId" parameterType="map">
+        update t_user_count
+        set like_total = #{userLikeTotal}
+        where user_id = #{userId}
+    </update>
 </mapper>
