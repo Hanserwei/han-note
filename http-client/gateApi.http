@@ -229,3 +229,53 @@ Authorization: Bearer {{otherToken}}
 {
   "id": 1977249693272375330
 }
+
+### 创建索引
+PUT http://localhost:9200/note
+Content-Type: application/json
+
+### 创建文档
+PUT http://localhost:9200/note/_doc/1
+Content-Type: application/json
+
+{
+  "title": "夏日旅游攻略",
+  "content": "去海边玩耍的必备攻略，推荐三亚和青岛。",
+  "create_time": "2024-08-16 16:49:35"
+}
+
+### 创建文档
+PUT http://localhost:9200/note/_doc/2
+Content-Type: application/json
+
+{
+  "title": "美食笔记",
+  "content": "推荐几家成都的火锅店，真的很辣很过瘾！",
+  "create_time": "2024-11-02 17:00:36"
+}
+
+### 创建文档
+PUT http://localhost:9200/note/_doc/3
+Content-Type: application/json
+
+{
+  "title": "秋季穿搭指南",
+  "content": "分享适合秋天的服装搭配技巧，风衣必不可少。",
+  "create_time": "2024-11-03 16:59:58"
+}
+
+### 搜索文档
+GET http://localhost:9200/note/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "multi_match": {
+      "query": "攻略",
+      "fields": [
+        "title",
+        "content"
+      ]
+    }
+  }
+}
