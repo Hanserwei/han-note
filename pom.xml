@@ -23,6 +23,7 @@
         <module>han-note-user-relation</module>
         <module>han-note-count</module>
         <module>han-note-data-align</module>
+        <module>han-note-search</module>
     </modules>
 
     <properties>
@@ -67,6 +68,7 @@
         <rocketmq-client.version>5.3.2</rocketmq-client.version>
         <buffertrigger.version>0.2.21</buffertrigger.version>
         <xxl-job.version>3.2.0</xxl-job.version>
+        <elasticsearch-java.version>9.2.0</elasticsearch-java.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -300,7 +302,12 @@
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl-job.version}</version>
             </dependency>
-
+            <!-- Elasticsearch 分布式搜索引擎 -->
+            <dependency>
+                <groupId>co.elastic.clients</groupId>
+                <artifactId>elasticsearch-java</artifactId>
+                <version>${elasticsearch-java.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

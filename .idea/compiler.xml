@@ -27,6 +27,7 @@
         <module name="han-note-data-align" />
         <module name="han-note-kv-api" />
         <module name="han-note-note-biz" />
+        <module name="han-note-search" />
         <module name="han-note-user-relation-api" />
         <module name="han-note-user-api" />
         <module name="han-note-user-biz" />
