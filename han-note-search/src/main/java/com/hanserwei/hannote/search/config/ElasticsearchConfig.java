@@ -1,7 +1,17 @@
 package com.hanserwei.hannote.search.config;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class ElasticsearchConfig {
@@ -9,23 +19,22 @@ public class ElasticsearchConfig {
     @Value("${elasticsearch.host}")
     private String host;
 
-    @Value("${elasticsearch.port}")
-    private int port;
+    @Bean
+    public ElasticsearchClient elasticsearchClient() {
+        // 1. 创建底层 RestClient（低级客户端）
+        RestClient restClient = RestClient
+                .builder(HttpHost.create(host))
+                .build();
 
-    @Value("${elasticsearch.scheme:http}")
-    private String scheme;
+        // 2. 创建 JSON 映射器
+        ObjectMapper mapper = JsonMapper.builder().build();
+        JacksonJsonpMapper jsonpMapper = new JacksonJsonpMapper(mapper);
 
-    @Value("${elasticsearch.username:}")
-    private String username;
+        // 3. 构建传输层
+        ElasticsearchTransport transport = new RestClientTransport(restClient, jsonpMapper);
 
-    @Value("${elasticsearch.password:}")
-    private String password;
-
-    @Value("${elasticsearch.api-key:}")
-    private String apiKey;
-
-    @Value("${elasticsearch.use-api-key:false}")
-    private boolean useApiKey;
-
+        // 4. 创建高层次的 Elasticsearch 客户端
+        return new ElasticsearchClient(transport);
+    }
 
 }

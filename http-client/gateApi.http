@@ -279,3 +279,12 @@ Content-Type: application/json
     }
   }
 }
+
+### 搜索用户（搜索服务）
+POST http://localhost:8092/search/user
+Content-Type: application/json
+
+{
+  "keyword": "憨",
+  "pageNo": 1
+}
