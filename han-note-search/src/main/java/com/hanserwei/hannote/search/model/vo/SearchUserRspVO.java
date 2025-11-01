@@ -1,5 +1,6 @@
 package com.hanserwei.hannote.search.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -38,19 +39,19 @@ public class SearchUserRspVO {
     /**
      * 小憨书ID
      */
-    @JsonProperty("han_note_id")
+    @JsonAlias("han_note_id")
     private String hanNoteId;
 
     /**
      * 笔记发布总数
      */
-    @JsonProperty("note_total")
+    @JsonAlias("note_total")
     private Integer noteTotal;
 
     /**
      * 粉丝总数
      */
-    @JsonProperty("fans_total")
+    @JsonAlias("fans_total")
     private String fansTotal;
 
 }

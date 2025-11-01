@@ -5,7 +5,7 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import jakarta.annotation.Resource;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +19,9 @@ public class ElasticsearchConfig {
     @Value("${elasticsearch.host}")
     private String host;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     @Bean
     public ElasticsearchClient elasticsearchClient() {
         // 1. 创建底层 RestClient（低级客户端）
@@ -26,12 +29,8 @@ public class ElasticsearchConfig {
                 .builder(HttpHost.create(host))
                 .build();
 
-        // 2. 创建 JSON 映射器
-        ObjectMapper mapper = JsonMapper.builder().build();
-        JacksonJsonpMapper jsonpMapper = new JacksonJsonpMapper(mapper);
-
         // 3. 构建传输层
-        ElasticsearchTransport transport = new RestClientTransport(restClient, jsonpMapper);
+        ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper(objectMapper));
 
         // 4. 创建高层次的 Elasticsearch 客户端
         return new ElasticsearchClient(transport);
