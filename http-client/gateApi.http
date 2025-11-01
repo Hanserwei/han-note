@@ -285,6 +285,6 @@ POST http://localhost:8092/search/user
 Content-Type: application/json
 
 {
-  "keyword": "憨",
+  "keyword": "憨憨",
   "pageNo": 1
 }
