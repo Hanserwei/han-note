@@ -249,7 +249,7 @@ public class NoteServiceImpl implements NoteService {
                             .nickname(nickname)
                             .updateTime(updateTime)
                             .highlightTitle(highlightedTitle)
-                            .likeTotal(NumberUtils.formatNumberString(Long.parseLong(likeTotal)))
+                            .likeTotal(likeTotal == null ? "0" : NumberUtils.formatNumberString(Long.parseLong(likeTotal)))
                             .build());
 
                 }
