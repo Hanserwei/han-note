@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,12 +49,22 @@ public class SearchNoteRspVO {
      * 最后一次编辑时间
      */
     @JsonAlias("update_time")
-    private LocalDateTime updateTime;
+    private String updateTime;
 
     /**
      * 被点赞总数
      */
     @JsonAlias("like_total")
     private String likeTotal;
+
+    /**
+     * 被评论数
+     */
+    private String commentTotal;
+
+    /**
+     * 被收藏数
+     */
+    private String collectTotal;
 
 }

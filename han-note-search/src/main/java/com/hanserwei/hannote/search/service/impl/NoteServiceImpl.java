@@ -11,8 +11,11 @@ import co.elastic.clients.elasticsearch.core.search.Highlight;
 import co.elastic.clients.elasticsearch.core.search.HighlightField;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.util.NamedValue;
+import com.hanserwei.framework.common.constant.DateConstants;
 import com.hanserwei.framework.common.response.PageResponse;
+import com.hanserwei.framework.common.utils.DateUtils;
 import com.hanserwei.framework.common.utils.NumberUtils;
+import com.hanserwei.hannote.search.enums.NotePublishTimeRangeEnum;
 import com.hanserwei.hannote.search.enums.NoteSortTypeEnum;
 import com.hanserwei.hannote.search.index.NoteIndex;
 import com.hanserwei.hannote.search.model.vo.SearchNoteReqVO;
@@ -20,6 +23,7 @@ import com.hanserwei.hannote.search.model.vo.SearchNoteRspVO;
 import com.hanserwei.hannote.search.service.NoteService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -46,6 +50,8 @@ public class NoteServiceImpl implements NoteService {
         Integer type = searchNoteReqVO.getType();
         // 排序方式
         Integer sort = searchNoteReqVO.getSort();
+        // 发布时间范围
+        Integer publishTimeRange = searchNoteReqVO.getPublishTimeRange();
 
         // --- 2. 分页参数 ---
         int pageSize = 10;
@@ -93,6 +99,31 @@ public class NoteServiceImpl implements NoteService {
                     )
             );
         }
+        // 按发布时间范围过滤
+        NotePublishTimeRangeEnum notePublishTimeRangeEnum = NotePublishTimeRangeEnum.valueOf(publishTimeRange);
+
+        if (Objects.nonNull(notePublishTimeRangeEnum)) {
+            // 结束时间
+            String endTime = LocalDateTime.now().format(DateConstants.DATE_FORMAT_Y_M_D_H_M_S);
+            // 开始时间
+            String startTime = null;
+            switch (notePublishTimeRangeEnum) {
+                case DAY -> startTime = DateUtils.localDateTime2String(LocalDateTime.now().minusDays(1)); // 一天之前的时间
+                case WEEK -> startTime = DateUtils.localDateTime2String(LocalDateTime.now().minusWeeks(1)); // 一周之前的时间
+                case HALF_YEAR ->
+                        startTime = DateUtils.localDateTime2String(LocalDateTime.now().minusMonths(6)); // 半年之前的时间
+            }
+            // 设置时间范围
+            if (StringUtils.isNoneBlank(startTime)) {
+                String finalStartTime = startTime;
+                boolQueryBuilder.filter(f -> f.range(r -> r
+                        .term(t -> t.field(NoteIndex.FIELD_NOTE_CREATE_TIME)
+                                .gte(finalStartTime)
+                                .lte(endTime)))
+                );
+            }
+        }
+
         BoolQuery boolQuery = boolQueryBuilder.build();
         // --- 4. 构建排序 (Sort) 和 FunctionScore ---
         Query finalQuery;
@@ -238,8 +269,10 @@ public class NoteServiceImpl implements NoteService {
                     String highlightTitle = source.getHighlightTitle();
                     String avatar = source.getAvatar();
                     String nickname = source.getNickname();
-                    LocalDateTime updateTime = source.getUpdateTime();
+                    String updateTime = source.getUpdateTime();
                     String likeTotal = source.getLikeTotal();
+                    String collectTotal = source.getCollectTotal();
+                    String commentTotal = source.getCommentTotal();
                     searchNoteRspVOS.add(SearchNoteRspVO.builder()
                             .noteId(noteId)
                             .cover(cover)
@@ -247,9 +280,11 @@ public class NoteServiceImpl implements NoteService {
                             .highlightTitle(highlightTitle)
                             .avatar(avatar)
                             .nickname(nickname)
-                            .updateTime(updateTime)
+                            .updateTime(DateUtils.formatRelativeTime(LocalDateTime.parse(updateTime, DateConstants.DATE_FORMAT_Y_M_D_H_M_S)))
                             .highlightTitle(highlightedTitle)
                             .likeTotal(likeTotal == null ? "0" : NumberUtils.formatNumberString(Long.parseLong(likeTotal)))
+                            .collectTotal(collectTotal == null ? "0" : NumberUtils.formatNumberString(Long.parseLong(collectTotal)))
+                            .collectTotal(commentTotal == null ? "0" : NumberUtils.formatNumberString(Long.parseLong(commentTotal)))
                             .build());
 
                 }
