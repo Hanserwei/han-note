@@ -50,6 +50,7 @@ public class CanalSchedule implements Runnable {
                     // 拉取数据为空，休眠 1s, 防止频繁拉取
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    log.error("消费 Canal 批次数据异常", e);
                 }
             } else {
                 // 如果当前批次有数据，打印这批次中的数据条目
@@ -77,7 +78,7 @@ public class CanalSchedule implements Runnable {
                 continue;
             }
 
-            CanalEntry.RowChange rowChage = null;
+            CanalEntry.RowChange rowChage;
             try {
                 rowChage = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
             } catch (Exception e) {
