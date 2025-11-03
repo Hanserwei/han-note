@@ -331,6 +331,11 @@
                 <artifactId>canal.protocol</artifactId>
                 <version>${canal.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.hanserwei</groupId>
+                <artifactId>han-note-search-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

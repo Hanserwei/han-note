@@ -6,6 +6,7 @@ import com.hanserwei.hannote.data.align.constant.TableConstants;
 import com.hanserwei.hannote.data.align.domain.mapper.DeleteRecordMapper;
 import com.hanserwei.hannote.data.align.domain.mapper.SelectRecordMapper;
 import com.hanserwei.hannote.data.align.domain.mapper.UpdateRecordMapper;
+import com.hanserwei.hannote.data.align.rpc.SearchRpcService;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import jakarta.annotation.Resource;
@@ -29,6 +30,8 @@ public class NotePublishCountShardingXxlJob {
     private DeleteRecordMapper deleteRecordMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private SearchRpcService searchRpcService;
 
     @XxlJob("notePublishCountShardingJobHandler")
     public void notePublishCountShardingJobHandler() throws Exception {
@@ -72,6 +75,8 @@ public class NotePublishCountShardingXxlJob {
                         redisTemplate.opsForHash().put(redisKey, RedisKeyConstants.FIELD_NOTE_TOTAL, notePublishTotal);
                     }
                 }
+                // 远程 RPC, 调用搜索服务，重新构建索引
+                searchRpcService.rebuildUserDocument(userId);
             });
 
             // 删除 t_data_align_note_publish_count_temp_日期_分片序号

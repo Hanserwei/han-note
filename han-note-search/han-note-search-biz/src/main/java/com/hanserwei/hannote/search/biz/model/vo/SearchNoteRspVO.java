@@ -1,0 +1,70 @@
+package com.hanserwei.hannote.search.biz.model.vo;
+
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SearchNoteRspVO {
+
+    /**
+     * 笔记ID
+     */
+    @JsonAlias("id")
+    private Long noteId;
+
+    /**
+     * 封面
+     */
+    private String cover;
+
+    /**
+     * 标题
+     */
+    private String title;
+
+    /**
+     * 标题：关键词高亮
+     */
+    private String highlightTitle;
+
+    /**
+     * 发布者头像
+     */
+    private String avatar;
+
+    /**
+     * 发布者昵称
+     */
+    private String nickname;
+
+    /**
+     * 最后一次编辑时间
+     */
+    @JsonAlias("update_time")
+    private String updateTime;
+
+    /**
+     * 被点赞总数
+     */
+    @JsonAlias("like_total")
+    private String likeTotal;
+
+    /**
+     * 被评论数
+     */
+    private String commentTotal;
+
+    /**
+     * 被收藏数
+     */
+    private String collectTotal;
+
+}

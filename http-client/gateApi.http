@@ -75,12 +75,14 @@ Authorization: Bearer {{token}}
 {
   "type": 0,
   "imgUris": [
-    "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
+    "http://116.62.199.48:9000/weblog/c58c6db953d24922803a65ca4f79a0a9.png",
+    "http://116.62.199.48:9000/weblog/04c7312e0b4b41be996004517c247e2b.jpg"
   ],
-  "title": "bug修复2",
-  "content": "bugbugbug",
-  "topicId": 1
+  "title": "最美的风景不是诗和远方，而就在身边",
+  "content": "最美的风景不是诗和远方，而就在身边",
+  "topicId": 2
 }
+
 
 ### 发布视频笔记
 POST http://localhost:8000/note/note/publish
