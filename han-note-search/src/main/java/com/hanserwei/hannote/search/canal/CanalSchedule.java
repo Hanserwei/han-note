@@ -3,7 +3,6 @@ package com.hanserwei.hannote.search.canal;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.IndexRequest;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.protocol.CanalEntry;
@@ -304,7 +303,7 @@ public class CanalSchedule implements Runnable {
                     .document(recordMap));
             // 将数据写入 Elasticsearch 索引
             try {
-                IndexResponse response = client.index(request);
+                client.index(request);
             } catch (IOException e) {
                 log.error("写入 Elasticsearch 索引异常", e);
             }
