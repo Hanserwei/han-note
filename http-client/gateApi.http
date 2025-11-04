@@ -298,6 +298,6 @@ Authorization: Bearer {{token}}
 
 {
   "noteId": 1862481582414102549,
-  "content": "这是一个评论",
+  "content": "这是第三个评论，测试一下异步消息重试",
   "imageUrl": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
 }
