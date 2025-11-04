@@ -15,28 +15,30 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
         </processorPath>
+        <module name="han-note-distributed-id-generator-api" />
+        <module name="han-note-data-align" />
+        <module name="han-note-note-biz" />
+        <module name="han-note-user-relation-api" />
+        <module name="han-note-user-api" />
+        <module name="han-note-user-biz" />
+        <module name="han-note-distributed-id-generator-biz" />
+        <module name="han-note-user-relation-biz" />
         <module name="han-note-oss-biz" />
+        <module name="han-note-comment-biz" />
         <module name="han-note-count-api" />
         <module name="han-note-oss-api" />
         <module name="han-note-count-biz" />
+        <module name="han-note-comment-api" />
         <module name="hanserwei-spring-boot-starter-biz-operationlog" />
         <module name="han-note-gateway" />
         <module name="han-note-note-api" />
         <module name="hanserwei-spring-boot-starter-jackson" />
-        <module name="han-note-distributed-id-generator-api" />
-        <module name="han-note-data-align" />
         <module name="han-note-kv-api" />
-        <module name="han-note-note-biz" />
         <module name="han-note-search-api" />
-        <module name="han-note-user-relation-api" />
-        <module name="han-note-user-api" />
-        <module name="han-note-user-biz" />
         <module name="han-note-kv-biz" />
         <module name="hanserwei-common" />
-        <module name="han-note-distributed-id-generator-biz" />
         <module name="han-note-auth" />
         <module name="han-note-search-biz" />
-        <module name="han-note-user-relation-biz" />
         <module name="hanserwei-spring-boot-starter-biz-context" />
       </profile>
     </annotationProcessing>

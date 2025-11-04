@@ -24,6 +24,7 @@
         <module>han-note-count</module>
         <module>han-note-data-align</module>
         <module>han-note-search</module>
+        <module>han-note-comment</module>
     </modules>
 
     <properties>

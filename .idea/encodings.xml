@@ -3,6 +3,12 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/han-note-auth/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/han-note-auth/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-comment/han-note-comment-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-comment/han-note-comment-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-comment/han-note-comment-biz/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-comment/han-note-comment-biz/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-comment/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/han-note-comment/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/han-note-count/han-note-count-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/han-note-count/han-note-count-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" charset="UTF-8" />
