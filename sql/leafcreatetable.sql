@@ -4,6 +4,9 @@ VALUES ('leaf-segment-hannote-id', 10100, 2000, '小憨书 ID', now());
 INSERT INTO `leaf`.`leaf` (`biz_tag`, `max_id`, `step`, `description`, `update_time`)
 VALUES ('leaf-segment-user-id', 100, 2000, '用户 ID', now());
 
+INSERT INTO `leaf`.`leaf` (`biz_tag`, `max_id`, `step`, `description`, `update_time`)
+VALUES ('leaf-segment-comment-id', 1, 2000, '评论 ID', NOW());
+
 CREATE TABLE `leaf`
 (
     `biz_tag`     varchar(128) NOT NULL DEFAULT '',

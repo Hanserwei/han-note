@@ -11,6 +11,7 @@ import com.hanserwei.hannote.comment.biz.domain.mapper.CommentDOMapper;
 import com.hanserwei.hannote.comment.biz.model.dto.PublishCommentMqDTO;
 import com.hanserwei.hannote.comment.biz.model.vo.PublishCommentReqVO;
 import com.hanserwei.hannote.comment.biz.retry.SendMqRetryHelper;
+import com.hanserwei.hannote.comment.biz.rpc.DistributedIdGeneratorRpcService;
 import com.hanserwei.hannote.comment.biz.service.CommentService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
 
     @Resource
     private SendMqRetryHelper sendMqRetryHelper;
+    @Resource
+    private DistributedIdGeneratorRpcService distributedIdGeneratorRpcService;
 
     @Override
     public Response<?> publishComment(PublishCommentReqVO publishCommentReqVO) {
@@ -40,6 +43,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
         // 发布者ID
         Long creatorId = LoginUserContextHolder.getUserId();
 
+        // RPC: 调用分布式 ID 生成服务，生成评论 ID
+        String commentId = distributedIdGeneratorRpcService.generateCommentId();
+
         // 发送消息
         // 构造MQ消息体
         PublishCommentMqDTO publishCommentMqDTO = PublishCommentMqDTO.builder()
@@ -49,6 +55,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
                 .replyCommentId(publishCommentReqVO.getReplyCommentId())
                 .createTime(LocalDateTime.now())
                 .creatorId(creatorId)
+                .commentId(Long.valueOf(commentId))
                 .build();
         // 发送 MQ 消息，包含重试机制
         sendMqRetryHelper.asyncSend(MQConstants.TOPIC_PUBLISH_COMMENT, JsonUtils.toJsonString(publishCommentMqDTO));

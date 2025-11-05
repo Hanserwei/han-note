@@ -3,6 +3,7 @@ package com.hanserwei.hannote.kv.api;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.kv.constant.ApiConstants;
 import com.hanserwei.hannote.kv.dto.req.AddNoteContentReqDTO;
+import com.hanserwei.hannote.kv.dto.req.BatchAddCommentContentReqDTO;
 import com.hanserwei.hannote.kv.dto.req.DeleteNoteContentReqDTO;
 import com.hanserwei.hannote.kv.dto.req.FindNoteContentReqDTO;
 import com.hanserwei.hannote.kv.dto.resp.FindNoteContentRspDTO;
@@ -23,5 +24,8 @@ public interface KeyValueFeignApi {
 
     @PostMapping(value = PREFIX + "/note/content/delete")
     Response<?> deleteNoteContent(@RequestBody DeleteNoteContentReqDTO deleteNoteContentReqDTO);
+
+    @PostMapping(value = PREFIX + "/comment/content/batchAdd")
+    Response<?> batchAddCommentContent(@RequestBody BatchAddCommentContentReqDTO batchAddCommentContentReqDTO);
 
 }

@@ -51,6 +51,16 @@
 
         <dependency>
             <groupId>com.hanserwei</groupId>
+            <artifactId>hanserwei-spring-boot-starter-biz-operationlog</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>hanserwei-spring-boot-starter-jackson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hanserwei</groupId>
             <artifactId>han-note-kv-api</artifactId>
         </dependency>
     </dependencies>

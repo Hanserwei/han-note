@@ -291,13 +291,41 @@ Content-Type: application/json
   "pageNo": 1
 }
 
-###
+### 发布评论
 POST http://localhost:8000/comment/comment/publish
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "noteId": 1862481582414102549,
-  "content": "这是第三个评论，测试一下异步消息重试",
-  "imageUrl": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
+  "content": "这是一条回复测试评论",
+  "imageUrl": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg",
+  "replyCommentId": 2001
+}
+
+### 批量添加评论
+POST http://localhost:8084/kv/comment/content/batchAdd
+Content-Type: application/json
+
+{
+  "comments": [
+    {
+      "noteId": 1862481582414102548,
+      "yearMonth": "2024-12",
+      "contentId": "db8339cd-beba-40a5-9182-c51c2588ae04",
+      "content": "这是一条评论内容1"
+    },
+    {
+      "noteId": 1862481582414102539,
+      "yearMonth": "2024-12",
+      "contentId": "db8339cd-beba-40a5-9182-c51c2588ae05",
+      "content": "这是一条评论内容2"
+    },
+    {
+      "noteId": 1862481582414102540,
+      "yearMonth": "2024-12",
+      "contentId": "db8339cd-beba-40a5-9182-c51c2588ae06",
+      "content": "这是一条评论内容3"
+    }
+  ]
 }
