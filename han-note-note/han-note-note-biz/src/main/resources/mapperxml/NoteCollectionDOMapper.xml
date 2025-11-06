@@ -31,4 +31,13 @@
           and note_id = #{noteId}
           and status = 1
     </update>
+
+  <insert id="batchInsertOrUpdate" parameterType="list">
+      INSERT INTO t_note_collection (user_id, note_id, status, create_time)
+      VALUES
+      <foreach item="item" collection="noteCollectionDOS" separator=",">
+          (#{item.userId}, #{item.noteId}, #{item.status}, #{item.createTime})
+      </foreach>
+      ON DUPLICATE KEY UPDATE status = VALUES(status)
+  </insert>
 </mapper>

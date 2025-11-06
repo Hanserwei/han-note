@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RocketMQMessageListener(
-        consumerGroup = "han_note_group_" + MQConstants.TOPIC_COUNT_NOTE_LIKE,
-        topic = MQConstants.TOPIC_COUNT_NOTE_LIKE
+        consumerGroup = "han_note_group_" + MQConstants.TOPIC_LIKE_OR_UNLIKE,
+        topic = MQConstants.TOPIC_LIKE_OR_UNLIKE
 )
 public class CountNoteLikeConsumer implements RocketMQListener<String> {
 

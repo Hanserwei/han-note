@@ -18,19 +18,9 @@ public interface MQConstants {
     String TOPIC_LIKE_OR_UNLIKE = "LikeUnlikeTopic";
 
     /**
-     * Topic: 计数 - 笔记点赞数
-     */
-    String TOPIC_COUNT_NOTE_LIKE = "CountNoteLikeTopic";
-
-    /**
      * Topic: 收藏、取消收藏共用一个
      */
     String TOPIC_COLLECT_OR_UN_COLLECT = "CollectUnCollectTopic";
-
-    /**
-     * Topic: 计数 - 笔记收藏数
-     */
-    String TOPIC_COUNT_NOTE_COLLECT = "CountNoteCollectTopic";
 
     /**
      * Topic: 笔记操作（发布、删除）

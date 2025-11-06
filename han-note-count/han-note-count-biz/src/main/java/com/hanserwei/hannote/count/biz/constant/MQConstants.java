@@ -3,6 +3,16 @@ package com.hanserwei.hannote.count.biz.constant;
 public interface MQConstants {
 
     /**
+     * Topic: 计数 - 笔记点赞数
+     */
+    String TOPIC_LIKE_OR_UNLIKE = "LikeUnlikeTopic";
+
+    /**
+     * Topic: 笔记收藏、取消收藏
+     */
+    String TOPIC_COLLECT_OR_UN_COLLECT = "CollectUnCollectTopic";
+
+    /**
      * Topic: 关注数计数
      */
     String TOPIC_COUNT_FOLLOWING = "CountFollowingTopic";
