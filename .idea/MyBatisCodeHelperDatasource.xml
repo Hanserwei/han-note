@@ -7,15 +7,13 @@
         <option name="customizedLombokAnnotation" value="true" />
         <option name="customizedLombokValue" value="@lombok.Builder" />
         <option name="deleteByPrimayKeyEnabled" value="false" />
-        <option name="generateService" value="true" />
-        <option name="generateServiceInterface" value="true" />
         <option name="insertMethodEnabled" value="false" />
         <option name="insertSelectiveMethodEnabled" value="false" />
-        <option name="javaMapperPackage" value="com.hanserwei.hannote.comment.biz.domain.mapper" />
-        <option name="javaMapperPath" value="$PROJECT_DIR$/han-note-comment/han-note-comment-biz/src/main/java" />
-        <option name="javaModelPackage" value="com.hanserwei.hannote.comment.biz.domain.dataobject" />
-        <option name="javaModelPath" value="$PROJECT_DIR$/han-note-comment/han-note-comment-biz/src/main/java" />
-        <option name="lastDatabaseCrudChooseModuleName" value="han-note-comment-biz" />
+        <option name="javaMapperPackage" value="com.hanserwei.hannote.count.biz.domain.mapper" />
+        <option name="javaMapperPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+        <option name="javaModelPackage" value="com.hanserwei.hannote.count.biz.domain.dataobject" />
+        <option name="javaModelPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/java" />
+        <option name="lastDatabaseCrudChooseModuleName" value="han-note-count-biz" />
         <option name="lombokAllArgConstructor" value="true" />
         <option name="lombokDataAnnotation" value="true" />
         <option name="lombokNoArgsConstructor" value="true" />
@@ -146,7 +144,7 @@
                   <option name="insertMethodEnabled" value="false" />
                   <option name="insertSelectiveMethodEnabled" value="false" />
                   <option name="javaModelName" value="CommentDO" />
-                  <option name="moduleName" value="han-note-comment-biz" />
+                  <option name="moduleName" value="han-note-count-biz" />
                   <option name="mybatisplusIdType" value="AUTO" />
                   <option name="selectByPrimaryKeyEnabled" value="false" />
                   <option name="sequenceColumn" value="" />
@@ -429,7 +427,7 @@
         <option name="updateByPrimaykeyEnabled" value="false" />
         <option name="userMybatisPlus" value="true" />
         <option name="xmlMapperPackage" value="mapperxml" />
-        <option name="xmlMapperPath" value="$PROJECT_DIR$/han-note-comment/han-note-comment-biz/src/main/resources" />
+        <option name="xmlMapperPath" value="$PROJECT_DIR$/han-note-count/han-note-count-biz/src/main/resources" />
       </ProjectProfile>
     </option>
   </component>
