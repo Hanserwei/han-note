@@ -280,4 +280,9 @@ CREATE TABLE `t_comment_like`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT ='评论点赞表';
 
+-- 表：t_comment表冗余字段
+alter table t_comment
+    add column `child_comment_total` bigint(20) unsigned DEFAULT '0' COMMENT '二级评论总数（只有一级评论才需要统计）';
+
+
 

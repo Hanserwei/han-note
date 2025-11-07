@@ -298,9 +298,8 @@ Authorization: Bearer {{token}}
 
 {
   "noteId": 1862481582414102549,
-  "content": "这是一条回复测试评论",
-  "imageUrl": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg",
-  "replyCommentId": 2001
+  "content": "这是一条测试评论计数的评论111",
+  "imageUrl": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg"
 }
 
 ### 批量添加评论

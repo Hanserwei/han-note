@@ -35,7 +35,7 @@ public class LikeUnlikeNoteConsumer {
     private final RateLimiter rateLimiter = RateLimiter.create(5000);
     @Value("${rocketmq.name-server}")
     private String nameServer;
-    @Resource
+
     private DefaultMQPushConsumer consumer;
     @Resource
     private NoteLikeDOMapper noteLikeDOMapper;

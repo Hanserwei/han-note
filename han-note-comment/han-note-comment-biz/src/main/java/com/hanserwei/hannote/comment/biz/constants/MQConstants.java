@@ -7,4 +7,9 @@ public interface MQConstants {
      */
     String TOPIC_PUBLISH_COMMENT = "PublishCommentTopic";
 
+    /**
+     * Topic: 笔记评论总数计数
+     */
+    String TOPIC_COUNT_NOTE_COMMENT = "CountNoteCommentTopic";
+
 }

@@ -3,6 +3,11 @@ package com.hanserwei.hannote.count.biz.constant;
 public interface MQConstants {
 
     /**
+     * Topic: 笔记评论总数计数
+     */
+    String TOPIC_COUNT_NOTE_COMMENT = "CountNoteCommentTopic";
+
+    /**
      * Topic: 计数 - 笔记点赞数
      */
     String TOPIC_LIKE_OR_UNLIKE = "LikeUnlikeTopic";
@@ -33,19 +38,9 @@ public interface MQConstants {
     String TOPIC_COUNT_FOLLOWING_2_DB = "CountFollowing2DBTopic";
 
     /**
-     * Topic: 计数 - 笔记点赞数
-     */
-    String TOPIC_COUNT_NOTE_LIKE = "CountNoteLikeTopic";
-
-    /**
      * Topic: 计数 - 笔记点赞数落库
      */
     String TOPIC_COUNT_NOTE_LIKE_2_DB = "CountNoteLike2DBTTopic";
-
-    /**
-     * Topic: 计数 - 笔记收藏数
-     */
-    String TOPIC_COUNT_NOTE_COLLECT = "CountNoteCollectTopic";
 
     /**
      * Topic: 计数 - 笔记收藏数落库
