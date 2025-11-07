@@ -115,4 +115,10 @@ public class CommentDO {
      */
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
+
+    /**
+     * 一级评论的第一个回复的评论ID
+     */
+    @TableField(value = "first_reply_comment_id")
+    private Long firstReplyCommentId;
 }

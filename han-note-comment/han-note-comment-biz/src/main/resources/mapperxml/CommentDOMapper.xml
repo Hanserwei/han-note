@@ -20,6 +20,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
       <result column="child_comment_total" jdbcType="BIGINT" property="childCommentTotal"/>
+      <result column="first_reply_comment_id" jdbcType="BIGINT" property="firstReplyCommentId"/>
   </resultMap>
   <sql id="Base_Column_List">
       <!--@mbg.generated-->
@@ -38,7 +39,8 @@
       is_top,
       create_time,
       update_time,
-      child_comment_total
+      child_comment_total,
+      first_reply_comment_id
   </sql>
 
     <select id="selectByCommentIds" resultMap="BaseResultMap" parameterType="list">
@@ -47,7 +49,8 @@
                parent_id,
                user_id,
                child_comment_total,
-               like_total
+               like_total,
+               first_reply_comment_id
         from t_comment
         where id in
         <foreach collection="commentIds" open="(" separator="," close=")" item="commentId">
@@ -81,5 +84,20 @@
         <foreach collection="commentIds" item="commentId" open="(" close=")" separator=",">
             #{commentId}
         </foreach>
+    </update>
+
+    <select id="selectEarliestByParentId" resultMap="BaseResultMap" parameterType="map">
+        select id
+        from t_comment
+        where parent_id = #{parentId}
+          and level = 2
+        order by create_time
+        limit 1
+    </select>
+
+    <update id="updateFirstReplyCommentIdByPrimaryKey" parameterType="map">
+        update t_comment
+        set first_reply_comment_id = #{firstReplyCommentId}
+        where id = #{id}
     </update>
 </mapper>

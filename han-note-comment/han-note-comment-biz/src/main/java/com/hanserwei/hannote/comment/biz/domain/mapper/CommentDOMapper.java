@@ -37,4 +37,22 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      */
     int batchUpdateHeatByCommentIds(@Param("commentIds") List<Long> commentIds,
                                     @Param("commentHeatBOS") List<CommentHeatBO> commentHeatBOS);
+
+    /**
+     * 查询一级评论下最早回复的评论
+     *
+     * @param parentId 一级评论 ID
+     * @return 一级评论下最早回复的评论
+     */
+    CommentDO selectEarliestByParentId(Long parentId);
+
+    /**
+     * 更新一级评论的 first_reply_comment_id
+     *
+     * @param firstReplyCommentId 一级评论下最早回复的评论 ID
+     * @param id                  一级评论 ID
+     * @return 更新数量
+     */
+    int updateFirstReplyCommentIdByPrimaryKey(@Param("firstReplyCommentId") Long firstReplyCommentId,
+                                              @Param("id") Long id);
 }
