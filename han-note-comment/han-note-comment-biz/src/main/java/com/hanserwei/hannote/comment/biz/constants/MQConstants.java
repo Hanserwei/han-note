@@ -12,4 +12,9 @@ public interface MQConstants {
      */
     String TOPIC_COUNT_NOTE_COMMENT = "CountNoteCommentTopic";
 
+    /**
+     * Topic: 评论热度值更新
+     */
+    String TOPIC_COMMENT_HEAT_UPDATE = "CommentHeatUpdateTopic";
+
 }

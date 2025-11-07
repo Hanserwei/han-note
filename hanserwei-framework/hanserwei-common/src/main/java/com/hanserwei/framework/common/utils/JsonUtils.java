@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class JsonUtils {
     private static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -92,6 +93,25 @@ public class JsonUtils {
             @Override
             public CollectionType getType() {
                 return OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, clazz);
+            }
+        });
+    }
+
+    /**
+     * 将 JSON 字符串解析为指定类型的 Set 对象
+     *
+     * @param jsonStr JSON 字符串
+     * @param clazz   目标对象类型
+     * @param <T>     目标对象类型
+     * @return Set 集合
+     * @throws Exception 抛出异常
+     */
+    public static <T> Set<T> parseSet(String jsonStr, Class<T> clazz) throws Exception {
+        // 使用 TypeReference 指定 Set<T> 的泛型类型
+        return OBJECT_MAPPER.readValue(jsonStr, new TypeReference<>() {
+            @Override
+            public CollectionType getType() {
+                return OBJECT_MAPPER.getTypeFactory().constructCollectionType(Set.class, clazz);
             }
         });
     }

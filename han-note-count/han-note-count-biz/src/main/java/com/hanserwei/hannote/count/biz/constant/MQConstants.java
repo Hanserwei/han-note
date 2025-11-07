@@ -8,6 +8,11 @@ public interface MQConstants {
     String TOPIC_COUNT_NOTE_COMMENT = "CountNoteCommentTopic";
 
     /**
+     * Topic: 评论热度值更新
+     */
+    String TOPIC_COMMENT_HEAT_UPDATE = "CommentHeatUpdateTopic";
+
+    /**
      * Topic: 计数 - 笔记点赞数
      */
     String TOPIC_LIKE_OR_UNLIKE = "LikeUnlikeTopic";

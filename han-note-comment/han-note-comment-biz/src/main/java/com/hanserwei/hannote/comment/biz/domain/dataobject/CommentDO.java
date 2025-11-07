@@ -105,6 +105,12 @@ public class CommentDO {
     private LocalDateTime createTime;
 
     /**
+     * 下级评论总数
+     */
+    @TableField(value = "child_comment_total")
+    private Long childCommentTotal;
+
+    /**
      * 更新时间
      */
     @TableField(value = "update_time")
