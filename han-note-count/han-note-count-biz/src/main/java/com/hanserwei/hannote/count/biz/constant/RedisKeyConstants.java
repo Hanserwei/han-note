@@ -37,6 +37,25 @@ public class RedisKeyConstants {
     public static final String FIELD_COLLECT_TOTAL = "collectTotal";
 
     /**
+     * Hash Field: 子评论总数
+     */
+    public static final String FIELD_CHILD_COMMENT_TOTAL = "childCommentTotal";
+    /**
+     * 评论维度计数 Key 前缀
+     */
+    private static final String COUNT_COMMENT_KEY_PREFIX = "count:comment:";
+
+    /**
+     * 构建评论维度计数 Key
+     *
+     * @param commentId 评论ID
+     * @return 评论维度计数 Key
+     */
+    public static String buildCountCommentKey(Long commentId) {
+        return COUNT_COMMENT_KEY_PREFIX + commentId;
+    }
+
+    /**
      * 构建用户维度计数 Key
      *
      * @param userId 用户ID

@@ -180,4 +180,16 @@
         order by id
         limit #{offset}, #{pageSize}
     </select>
+
+    <select id="selectCommentCountByIds" resultMap="BaseResultMap" parameterType="list">
+        select id,
+               child_comment_total,
+               like_total,
+               level
+        from t_comment
+        where id in
+        <foreach collection="commentIds" open="(" separator="," close=")" item="commentId">
+            #{commentId}
+        </foreach>
+    </select>
 </mapper>

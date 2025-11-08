@@ -298,9 +298,9 @@ Authorization: Bearer {{token}}
 
 {
   "noteId": 1862481582414102549,
-  "content": "这是一条测试同步Redis并更新热度的评论",
+  "content": "这是一条测试同步Redis更新计数的评论",
   "imageUrl": "https://cdn.pixabay.com/photo/2025/10/05/15/06/autumn-9875155_1280.jpg",
-  "replyCommentId": 8001
+  "replyCommentId": 4002
 }
 
 ### 批量添加评论

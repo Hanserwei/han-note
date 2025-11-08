@@ -102,4 +102,12 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
     List<CommentDO> selectChildPageList(@Param("parentId") Long parentId,
                                         @Param("offset") long offset,
                                         @Param("pageSize") long pageSize);
+
+    /**
+     * 批量查询计数数据
+     *
+     * @param commentIds 评论 ID 列表
+     * @return 计数数据
+     */
+    List<CommentDO> selectCommentCountByIds(@Param("commentIds") List<Long> commentIds);
 }
