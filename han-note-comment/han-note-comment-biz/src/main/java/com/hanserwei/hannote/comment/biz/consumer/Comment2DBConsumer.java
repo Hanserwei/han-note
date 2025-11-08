@@ -183,7 +183,10 @@ public class Comment2DBConsumer {
                                 .toList();
                         if (CollUtil.isNotEmpty(commentContentNotEmptyBOS)) {
                             // 批量存入评论内容
-                            keyValueRpcService.batchSaveCommentContent(commentContentNotEmptyBOS);
+                            boolean result = keyValueRpcService.batchSaveCommentContent(commentContentNotEmptyBOS);
+                            if (!result) {
+                                throw new RuntimeException("批量保存评论内容失败");
+                            }
                         }
 
                         return count;

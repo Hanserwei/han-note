@@ -125,6 +125,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.hanserwei</groupId>
+            <artifactId>han-note-user-api</artifactId>
+        </dependency>
+
 
     </dependencies>
 

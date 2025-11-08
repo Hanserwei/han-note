@@ -11,7 +11,6 @@ import java.util.List;
 
 @Mapper
 public interface CommentDOMapper extends BaseMapper<CommentDO> {
-
     /**
      * 根据评论 ID 批量查询
      *
@@ -55,4 +54,24 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      */
     int updateFirstReplyCommentIdByPrimaryKey(@Param("firstReplyCommentId") Long firstReplyCommentId,
                                               @Param("id") Long id);
+
+    /**
+     * 查询评论分页数据
+     *
+     * @param noteId   笔记 ID
+     * @param offset   偏移量
+     * @param pageSize 页大小
+     * @return 评论分页数据
+     */
+    List<CommentDO> selectPageList(@Param("noteId") Long noteId,
+                                   @Param("offset") long offset,
+                                   @Param("pageSize") long pageSize);
+
+    /**
+     * 批量查询二级评论
+     *
+     * @param commentIds 评论 ID 列表
+     * @return 二级评论
+     */
+    List<CommentDO> selectTwoLevelCommentByIds(@Param("commentIds") List<Long> commentIds);
 }

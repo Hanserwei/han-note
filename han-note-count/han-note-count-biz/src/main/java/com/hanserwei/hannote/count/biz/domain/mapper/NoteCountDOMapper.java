@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface NoteCountDOMapper extends BaseMapper<NoteCountDO> {
-
     /**
      * 添加笔记计数记录或更新笔记点赞数
      *

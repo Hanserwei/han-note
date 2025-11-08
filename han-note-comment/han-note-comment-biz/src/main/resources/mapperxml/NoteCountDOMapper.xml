@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanserwei.hannote.comment.biz.domain.mapper.NoteCountDOMapper">
+    <resultMap id="BaseResultMap" type="com.hanserwei.hannote.comment.biz.domain.dataobject.NoteCountDO">
+        <!--@mbg.generated-->
+        <!--@Table t_note_count-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="note_id" jdbcType="BIGINT" property="noteId"/>
+        <result column="like_total" jdbcType="BIGINT" property="likeTotal"/>
+        <result column="collect_total" jdbcType="BIGINT" property="collectTotal"/>
+        <result column="comment_total" jdbcType="BIGINT" property="commentTotal"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, note_id, like_total, collect_total, comment_total
+    </sql>
+
+    <select id="selectCommentTotalByNoteId" resultType="long">
+        select comment_total
+        from t_note_count
+        where note_id = #{noteId}
+    </select>
+</mapper>

@@ -1,7 +1,10 @@
 package com.hanserwei.hannote.comment.biz.controller;
 
 import com.hanserwei.framework.biz.operationlog.aspect.ApiOperationLog;
+import com.hanserwei.framework.common.response.PageResponse;
 import com.hanserwei.framework.common.response.Response;
+import com.hanserwei.hannote.comment.biz.model.vo.FindCommentItemRspVO;
+import com.hanserwei.hannote.comment.biz.model.vo.FindCommentPageListReqVO;
 import com.hanserwei.hannote.comment.biz.model.vo.PublishCommentReqVO;
 import com.hanserwei.hannote.comment.biz.service.CommentService;
 import jakarta.annotation.Resource;
@@ -24,6 +27,12 @@ public class CommentController {
     @ApiOperationLog(description = "发布评论")
     public Response<?> publishComment(@Validated @RequestBody PublishCommentReqVO publishCommentReqVO) {
         return commentService.publishComment(publishCommentReqVO);
+    }
+
+    @PostMapping("/list")
+    @ApiOperationLog(description = "评论分页查询")
+    public PageResponse<FindCommentItemRspVO> findCommentPageList(@Validated @RequestBody FindCommentPageListReqVO findCommentPageListReqVO) {
+        return commentService.findCommentPageList(findCommentPageListReqVO);
     }
 
 }

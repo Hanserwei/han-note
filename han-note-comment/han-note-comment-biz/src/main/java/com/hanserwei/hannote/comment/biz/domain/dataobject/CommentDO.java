@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -105,19 +106,25 @@ public class CommentDO {
     private LocalDateTime createTime;
 
     /**
-     * 下级评论总数
-     */
-    @TableField(value = "child_comment_total")
-    private Long childCommentTotal;
-
-    /**
      * 更新时间
      */
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
 
     /**
-     * 一级评论的第一个回复的评论ID
+     * 二级评论总数（只有一级评论才需要统计）
+     */
+    @TableField(value = "child_comment_total")
+    private Long childCommentTotal;
+
+    /**
+     * 评论热度
+     */
+    @TableField(value = "heat")
+    private BigDecimal heat;
+
+    /**
+     * 最早回复的评论ID (只有一级评论需要)
      */
     @TableField(value = "first_reply_comment_id")
     private Long firstReplyCommentId;
