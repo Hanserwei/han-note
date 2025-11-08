@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.comment.biz.constants.MQConstants;
+import com.hanserwei.hannote.comment.biz.constants.RedisKeyConstants;
 import com.hanserwei.hannote.comment.biz.domain.dataobject.CommentDO;
 import com.hanserwei.hannote.comment.biz.domain.mapper.CommentDOMapper;
 import com.hanserwei.hannote.comment.biz.model.bo.CommentHeatBO;
@@ -13,12 +14,19 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RocketMQMessageListener(consumerGroup = "han_note_group_" + MQConstants.TOPIC_COMMENT_HEAT_UPDATE, // Group 组
@@ -29,6 +37,8 @@ public class CommentHeatUpdateConsumer implements RocketMQListener<String> {
 
     @Resource
     private CommentDOMapper commentDOMapper;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     private final BufferTrigger<String> bufferTrigger = BufferTrigger.<String>batchBlocking()
             .bufferSize(50000) // 缓存队列的最大容量
@@ -82,9 +92,47 @@ public class CommentHeatUpdateConsumer implements RocketMQListener<String> {
             commentBOS.add(CommentHeatBO.builder()
                     .id(commentId)
                     .heat(heatNum.doubleValue())
+                    .noteId(commentDO.getNoteId())
                     .build());
         });
         // 批量更新评论热度值
         commentDOMapper.batchUpdateHeatByCommentIds(ids, commentBOS);
+
+        // 更新 Redis 中热度评论 ZSET
+        updateRedisHotComments(commentBOS);
+    }
+
+    /**
+     * 更新 Redis 中热点评论 ZSET
+     *
+     * @param commentHeatBOList 热度值 BO 列表
+     */
+    private void updateRedisHotComments(List<CommentHeatBO> commentHeatBOList) {
+        // 过滤出热度值大于 0 的，并按所属笔记 ID 分组（若热度等于0，则不进行更新）
+        Map<Long, List<CommentHeatBO>> noteIdAndBOListMap = commentHeatBOList.stream()
+                .filter(commentHeatBO -> commentHeatBO.getHeat() > 0)
+                .collect(Collectors.groupingBy(CommentHeatBO::getNoteId));
+
+        // 循环
+        noteIdAndBOListMap.forEach((noteId, commentHeatBOS) -> {
+            // 构建热点评论 Redis Key
+            String key = RedisKeyConstants.buildCommentListKey(noteId);
+
+            DefaultRedisScript<Long> script = new DefaultRedisScript<>();
+            // Lua 脚本路径
+            script.setScriptSource(new ResourceScriptSource(new ClassPathResource("/lua/update_hot_comments.lua")));
+            // 返回值类型
+            script.setResultType(Long.class);
+
+            // 构建执行 Lua 脚本所需的 ARGS 参数
+            List<Object> args = Lists.newArrayList();
+            commentHeatBOS.forEach(commentHeatBO -> {
+                args.add(commentHeatBO.getId()); // Member: 评论ID
+                args.add(commentHeatBO.getHeat()); // Score: 热度值
+            });
+
+            // 执行 Lua 脚本
+            redisTemplate.execute(script, Collections.singletonList(key), args.toArray());
+        });
     }
 }
