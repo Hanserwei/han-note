@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -121,7 +120,7 @@ public class CommentDO {
      * 评论热度
      */
     @TableField(value = "heat")
-    private BigDecimal heat;
+    private Double heat;
 
     /**
      * 最早回复的评论ID (只有一级评论需要)

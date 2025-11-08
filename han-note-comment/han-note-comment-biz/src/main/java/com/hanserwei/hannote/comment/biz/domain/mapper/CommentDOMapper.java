@@ -74,4 +74,12 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      * @return 二级评论
      */
     List<CommentDO> selectTwoLevelCommentByIds(@Param("commentIds") List<Long> commentIds);
+
+    /**
+     * 查询热门评论
+     *
+     * @param noteId 笔记 ID
+     * @return 热门评论
+     */
+    List<CommentDO> selectHeatComments(Long noteId);
 }
