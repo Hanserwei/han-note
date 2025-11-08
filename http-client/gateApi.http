@@ -3,7 +3,7 @@ POST http://localhost:8000/auth/verification/code/send
 Content-Type: application/json
 
 {
-  "email": "2628273921@qq.com"
+  "email": "ssw010723@gmail.com"
 }
 
 ### 登录/注册
@@ -11,8 +11,8 @@ POST http://localhost:8000/auth/login
 Content-Type: application/json
 
 {
-  "email": "2628273921@qq.com",
-  "code": "825004",
+  "email": "ssw010723@gmail.com",
+  "code": "116253",
   "type": 1
 }
 
@@ -368,9 +368,19 @@ Authorization: Bearer {{token}}
 }
 
 ### 点赞评论
-POST http://localhost:8093/comment/like
+POST http://localhost:8000/comment/comment/like
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "commentId": 4002
+  "commentId": 8001
+}
+
+### 取消点赞评论
+POST http://localhost:8000/comment/comment/unlike
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "commentId": 8001
 }

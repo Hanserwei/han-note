@@ -38,4 +38,12 @@ public interface CommentService extends IService<CommentDO> {
      * @return 响应
      */
     Response<?> likeComment(LikeCommentReqVO likeCommentReqVO);
+
+    /**
+     * 取消评论点赞
+     *
+     * @param unLikeCommentReqVO 取消评论点赞请求
+     * @return 响应
+     */
+    Response<?> unlikeComment(UnLikeCommentReqVO unLikeCommentReqVO);
 }

@@ -16,4 +16,14 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      * @return 更新结果
      */
     int updateChildCommentTotal(@Param("parentId") Long parentId, @Param("count") int count);
+
+    /**
+     * 更新评论点赞数
+     *
+     * @param count     计数
+     * @param commentId 评论 ID
+     * @return 更新结果
+     */
+    int updateLikeTotalByCommentId(@Param("count") Integer count,
+                                   @Param("commentId") Long commentId);
 }
