@@ -366,3 +366,11 @@ Authorization: Bearer {{token}}
   "parentCommentId": 4002,
   "pageNo": 1
 }
+
+### 点赞评论
+POST http://localhost:8093/comment/like
+Content-Type: application/json
+
+{
+  "commentId": 4002
+}

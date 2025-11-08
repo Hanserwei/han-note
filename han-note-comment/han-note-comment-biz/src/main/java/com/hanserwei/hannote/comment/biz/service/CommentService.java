@@ -30,4 +30,12 @@ public interface CommentService extends IService<CommentDO> {
      * @return 响应
      */
     PageResponse<FindChildCommentItemRspVO> findChildCommentPageList(FindChildCommentPageListReqVO findChildCommentPageListReqVO);
+
+    /**
+     * 评论点赞
+     *
+     * @param likeCommentReqVO 评论点赞请求
+     * @return 响应
+     */
+    Response<?> likeComment(LikeCommentReqVO likeCommentReqVO);
 }

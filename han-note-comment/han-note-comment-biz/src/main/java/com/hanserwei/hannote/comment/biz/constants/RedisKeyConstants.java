@@ -8,6 +8,11 @@ public class RedisKeyConstants {
     private static final String HAVE_FIRST_REPLY_COMMENT_KEY_PREFIX = "comment:havaFirstReplyCommentId:";
 
     /**
+     * Key 前缀：布隆过滤器 - 用户点赞的评论
+     */
+    private static final String BLOOM_COMMENT_LIKES_KEY_PREFIX = "bloom:comment:likes:";
+
+    /**
      * Key 前缀：二级评论分页 ZSET
      */
     private static final String CHILD_COMMENT_LIST_KEY_PREFIX = "comment:childList:";
@@ -44,6 +49,16 @@ public class RedisKeyConstants {
      * Key 前缀：评论详情 JSON
      */
     private static final String COMMENT_DETAIL_KEY_PREFIX = "comment:detail:";
+
+    /**
+     * 构建 布隆过滤器 - 用户点赞的评论 完整 KEY
+     *
+     * @param userId 用户 ID
+     * @return 布隆过滤器 - 用户点赞的评论 完整 KEY
+     */
+    public static String buildBloomCommentLikesKey(Long userId) {
+        return BLOOM_COMMENT_LIKES_KEY_PREFIX + userId;
+    }
 
     /**
      * 构建子评论分页 ZSET 完整 KEY
