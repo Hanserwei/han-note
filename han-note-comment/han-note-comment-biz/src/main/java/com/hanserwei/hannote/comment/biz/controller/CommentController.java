@@ -3,9 +3,7 @@ package com.hanserwei.hannote.comment.biz.controller;
 import com.hanserwei.framework.biz.operationlog.aspect.ApiOperationLog;
 import com.hanserwei.framework.common.response.PageResponse;
 import com.hanserwei.framework.common.response.Response;
-import com.hanserwei.hannote.comment.biz.model.vo.FindCommentItemRspVO;
-import com.hanserwei.hannote.comment.biz.model.vo.FindCommentPageListReqVO;
-import com.hanserwei.hannote.comment.biz.model.vo.PublishCommentReqVO;
+import com.hanserwei.hannote.comment.biz.model.vo.*;
 import com.hanserwei.hannote.comment.biz.service.CommentService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +31,12 @@ public class CommentController {
     @ApiOperationLog(description = "评论分页查询")
     public PageResponse<FindCommentItemRspVO> findCommentPageList(@Validated @RequestBody FindCommentPageListReqVO findCommentPageListReqVO) {
         return commentService.findCommentPageList(findCommentPageListReqVO);
+    }
+
+    @PostMapping("/child/list")
+    @ApiOperationLog(description = "二级评论分页查询")
+    public PageResponse<FindChildCommentItemRspVO> findChildCommentPageList(@Validated @RequestBody FindChildCommentPageListReqVO findChildCommentPageListReqVO) {
+        return commentService.findChildCommentPageList(findChildCommentPageListReqVO);
     }
 
 }

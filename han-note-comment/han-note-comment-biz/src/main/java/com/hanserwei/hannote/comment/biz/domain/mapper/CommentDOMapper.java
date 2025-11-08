@@ -82,4 +82,24 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      * @return 热门评论
      */
     List<CommentDO> selectHeatComments(Long noteId);
+
+    /**
+     * 查询一级评论下子评论总数
+     *
+     * @param commentId 一级评论 ID
+     * @return 一级评论下子评论总数
+     */
+    Long selectChildCommentTotalById(Long commentId);
+
+    /**
+     * 查询二级评论分页数据
+     *
+     * @param parentId 一级评论 ID
+     * @param offset   偏移量
+     * @param pageSize 页大小
+     * @return 二级评论分页数据
+     */
+    List<CommentDO> selectChildPageList(@Param("parentId") Long parentId,
+                                        @Param("offset") long offset,
+                                        @Param("pageSize") long pageSize);
 }

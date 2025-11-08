@@ -356,3 +356,13 @@ Content-Type: application/json
   "noteId": 1862481582414102549,
   "pageNo": 1
 }
+
+### 分页查询子评论
+POST http://localhost:8000/comment/comment/child/list
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "parentCommentId": 4002,
+  "pageNo": 1
+}
