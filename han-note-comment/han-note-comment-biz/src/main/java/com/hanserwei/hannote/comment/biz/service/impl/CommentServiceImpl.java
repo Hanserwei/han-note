@@ -19,7 +19,9 @@ import com.hanserwei.framework.common.utils.JsonUtils;
 import com.hanserwei.hannote.comment.biz.constants.MQConstants;
 import com.hanserwei.hannote.comment.biz.constants.RedisKeyConstants;
 import com.hanserwei.hannote.comment.biz.domain.dataobject.CommentDO;
+import com.hanserwei.hannote.comment.biz.domain.dataobject.CommentLikeDO;
 import com.hanserwei.hannote.comment.biz.domain.mapper.CommentDOMapper;
+import com.hanserwei.hannote.comment.biz.domain.mapper.CommentLikeDOMapper;
 import com.hanserwei.hannote.comment.biz.domain.mapper.NoteCountDOMapper;
 import com.hanserwei.hannote.comment.biz.enums.CommentLevelEnum;
 import com.hanserwei.hannote.comment.biz.enums.CommentLikeLuaResultEnum;
@@ -81,6 +83,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
     private RedisTemplate<String, Object> redisTemplate;
     @Resource(name = "taskExecutor")
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Resource
+    private CommentLikeDOMapper commentLikeDOMapper;
 
     /**
      * 评论详情本地缓存
@@ -464,11 +468,39 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
         switch (commentLikeLuaResultEnum) {
             // Redis 中布隆过滤器不存在
             case NOT_EXIST -> {
-                // TODO:
+                // 从数据库中校验评论是否被点赞，并异步初始化布隆过滤器，设置过期时间
+                int count = commentLikeDOMapper.selectCountByUserIdAndCommentId(userId, commentId);
+
+                // 保底1小小时+随机秒数
+                long expireSeconds = 60 * 60 + RandomUtil.randomInt(60 * 60);
+
+                // 目标评论已经被点赞
+                if (count > 0) {
+                    // 异步初始化布隆过滤器
+                    // 异步初始化布隆过滤器
+                    threadPoolTaskExecutor.submit(() ->
+                            batchAddCommentLike2BloomAndExpire(userId, expireSeconds, bloomUserCommentLikeListKey));
+
+                    throw new ApiException(ResponseCodeEnum.COMMENT_ALREADY_LIKED);
+                }
+                // 若目标评论未被点赞，查询当前用户是否有点赞其他评论，有则同步初始化布隆过滤器
+                batchAddCommentLike2BloomAndExpire(userId, expireSeconds, bloomUserCommentLikeListKey);
+
+                // 添加当前点赞评论 ID 到布隆过滤器中
+                // Lua 脚本路径
+                script.setScriptSource(new ResourceScriptSource(new ClassPathResource("/lua/bloom_add_comment_like_and_expire.lua")));
+                // 返回值类型
+                script.setResultType(Long.class);
+                redisTemplate.execute(script, Collections.singletonList(bloomUserCommentLikeListKey), commentId, expireSeconds);
             }
             // 目标评论已经被点赞 (可能存在误判，需要进一步确认)
             case COMMENT_LIKED -> {
-                // TODO:
+                // 查询数据库校验是否点赞
+                int count = commentLikeDOMapper.selectCountByUserIdAndCommentId(userId, commentId);
+
+                if (count > 0) {
+                    throw new ApiException(ResponseCodeEnum.COMMENT_ALREADY_LIKED);
+                }
             }
         }
 
@@ -505,6 +537,38 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
         });
 
         return Response.success();
+    }
+
+    /**
+     * 初始化评论点赞布隆过滤器
+     *
+     * @param userId                      用户ID
+     * @param expireSeconds               过期时间
+     * @param bloomUserCommentLikeListKey 布隆过滤器 Key
+     */
+    private void batchAddCommentLike2BloomAndExpire(Long userId, long expireSeconds, String bloomUserCommentLikeListKey) {
+        try {
+            // 查询该用户点赞的所有评论
+            List<CommentLikeDO> commentLikeDOS = commentLikeDOMapper.selectByUserId(userId);
+
+            // 若不为空，批量添加到布隆过滤器中
+            if (CollUtil.isNotEmpty(commentLikeDOS)) {
+                DefaultRedisScript<Long> script = new DefaultRedisScript<>();
+                // Lua 脚本路径
+                script.setScriptSource(new ResourceScriptSource(new ClassPathResource("/lua/bloom_batch_add_comment_like_and_expire.lua")));
+                // 返回值类型
+                script.setResultType(Long.class);
+
+                // 构建 Lua 参数
+                List<Object> luaArgs = Lists.newArrayList();
+                commentLikeDOS.forEach(commentLikeDO ->
+                        luaArgs.add(commentLikeDO.getCommentId())); // 将每个点赞的评论 ID 传入
+                luaArgs.add(expireSeconds);  // 最后一个参数是过期时间（秒）
+                redisTemplate.execute(script, Collections.singletonList(bloomUserCommentLikeListKey), luaArgs.toArray());
+            }
+        } catch (Exception e) {
+            log.error("## 异步初始化【评论点赞】布隆过滤器异常: ", e);
+        }
     }
 
     /**

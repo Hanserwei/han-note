@@ -372,5 +372,5 @@ POST http://localhost:8093/comment/like
 Content-Type: application/json
 
 {
-  "commentId": 4002
+  "commentId": 6001
 }
