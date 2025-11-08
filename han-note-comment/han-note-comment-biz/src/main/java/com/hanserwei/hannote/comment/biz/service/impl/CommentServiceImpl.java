@@ -3,6 +3,8 @@ package com.hanserwei.hannote.comment.biz.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -34,7 +36,11 @@ import com.hanserwei.hannote.user.dto.resp.FindUserByIdRspDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.*;
+import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NonNull;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +69,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
     private RedisTemplate<String, Object> redisTemplate;
     @Resource(name = "taskExecutor")
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+    /**
+     * 评论详情本地缓存
+     */
+    private static final Cache<Long, String> LOCAL_CACHE = Caffeine.newBuilder()
+            .initialCapacity(10000) // 设置初始容量为 10000 个条目
+            .maximumSize(10000) // 设置缓存的最大容量为 10000 个条目
+            .expireAfterWrite(1, TimeUnit.HOURS) // 设置缓存条目在写入后 1 小时过期
+            .build();
 
     @Override
     public Response<?> publishComment(PublishCommentReqVO publishCommentReqVO) {
@@ -167,47 +182,83 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
         }
 
         // 分页返回参数
-        List<FindCommentItemRspVO> commentRspVOS = null;
+        List<FindCommentItemRspVO> commentRspVOS;
 
-        // 若评论总数大于0
-        if (count > 0) {
-            commentRspVOS = Lists.newArrayList();
-            // 计算分页查询的offset
-            long offset = PageResponse.getOffset(pageNo, pageSize);
-            // 评论分页缓存使用 ZSET + STRING 实现
-            // 构建评论 ZSET Key
-            String commentZSetKey = RedisKeyConstants.buildCommentListKey(noteId);
-            // 先判断 ZSET 是否存在
-            boolean hasKey = redisTemplate.hasKey(commentZSetKey);
+        commentRspVOS = Lists.newArrayList();
+        // 计算分页查询的offset
+        long offset = PageResponse.getOffset(pageNo, pageSize);
+        // 评论分页缓存使用 ZSET + STRING 实现
+        // 构建评论 ZSET Key
+        String commentZSetKey = RedisKeyConstants.buildCommentListKey(noteId);
+        // 先判断 ZSET 是否存在
+        boolean hasKey = redisTemplate.hasKey(commentZSetKey);
 
-            // 若不存在
-            if (!hasKey) {
-                // 异步将热点评论同步到 redis 中（最多同步 500 条）
-                threadPoolTaskExecutor.execute(() ->
-                        syncHeatComments2Redis(commentZSetKey, noteId));
-            }
+        // 若不存在
+        if (!hasKey) {
+            // 异步将热点评论同步到 redis 中（最多同步 500 条）
+            threadPoolTaskExecutor.execute(() ->
+                    syncHeatComments2Redis(commentZSetKey, noteId));
+        }
 
-            // 若 ZSET 缓存存在, 并且查询的是前 50 页的评论
-            if (hasKey && offset < 500) {
-                // 使用 ZRevRange 获取某篇笔记下，按热度降序排序的一级评论 ID
-                Set<Object> commentIds = redisTemplate.opsForZSet()
-                        .reverseRangeByScore(commentZSetKey, -Double.MAX_VALUE, Double.MAX_VALUE, offset, pageSize);
+        // 若 ZSET 缓存存在, 并且查询的是前 50 页的评论
+        if (hasKey && offset < 500) {
+            // 使用 ZRevRange 获取某篇笔记下，按热度降序排序的一级评论 ID
+            Set<Object> commentIds = redisTemplate.opsForZSet()
+                    .reverseRangeByScore(commentZSetKey, -Double.MAX_VALUE, Double.MAX_VALUE, offset, pageSize);
 
-                // 若结果不为空
-                if (CollUtil.isNotEmpty(commentIds)) {
-                    // Set 转 List
-                    List<Object> commentIdList = Lists.newArrayList(commentIds);
+            // 若结果不为空
+            if (CollUtil.isNotEmpty(commentIds)) {
+                // Set 转 List
+                List<Object> commentIdList = Lists.newArrayList(commentIds);
 
-                    // 构建 MGET 批量查询评论详情的 Key 集合
-                    List<String> commentIdKeys = commentIdList.stream()
-                            .map(RedisKeyConstants::buildCommentDetailKey)
-                            .toList();
+                // 先查询本地缓存
+                // 新建一个集合用于存储本地缓存中不存在的评论ID
+                List<Long> localeCacheExpiredCommentIds = Lists.newArrayList();
 
-                    // MGET 批量获取评论数据
-                    List<Object> commentsJsonList = redisTemplate.opsForValue().multiGet(commentIdKeys);
+                // 构建本地缓存的key集合
+                List<Long> localCacheKeys = commentIdList.stream()
+                        .map(e -> Long.valueOf(e.toString()))
+                        .toList();
 
-                    // 可能存在部分评论不在缓存中，已经过期被删除，这些评论 ID 需要提取出来，等会查数据库
-                    List<Long> expiredCommentIds = Lists.newArrayList();
+                // 批量查询本地缓存
+                Map<Long, @NonNull String> commentIdAndDetailJsonMap = LOCAL_CACHE.getAll(localCacheKeys, missingKeys -> {
+                    // 对应本地缓存缺失的Key返回空字符串
+                    Map<Long, String> missingData = Maps.newHashMap();
+                    missingKeys.forEach(key -> {
+                        // 记录缓存中不存在的ID
+                        localeCacheExpiredCommentIds.add(key);
+                        // 不存在的评论详情，对其Value设置为空字符串
+                        missingData.put(key, Strings.EMPTY);
+                    });
+                    return missingData;
+                });
+
+                // 如果localCacheExpiredCommentIds的大小不等于commentIdList的大小，说明本地缓存中有数据
+                if (CollUtil.size(localeCacheExpiredCommentIds) != commentIdList.size()) {
+                    // 将本地缓存中的评论详情Json转为实体类添加到VO返参集合中
+                    for (String value : commentIdAndDetailJsonMap.values()) {
+                        if (StringUtils.isBlank(value)) continue;
+                        FindCommentItemRspVO commentRspVO = JsonUtils.parseObject(value, FindCommentItemRspVO.class);
+                        commentRspVOS.add(commentRspVO);
+                    }
+                }
+
+                // 如果localCacheExpiredCommentIds大小为0，说明评论详情全在本地缓存中，直接响应返参
+                if (CollUtil.size(localeCacheExpiredCommentIds) == 0) {
+                    return PageResponse.success(commentRspVOS, pageNo, count, pageSize);
+                }
+
+                // 构建 MGET 批量查询评论详情的 Key 集合
+                List<String> commentIdKeys = localeCacheExpiredCommentIds.stream()
+                        .map(RedisKeyConstants::buildCommentDetailKey)
+                        .toList();
+
+                // MGET 批量获取评论数据
+                List<Object> commentsJsonList = redisTemplate.opsForValue().multiGet(commentIdKeys);
+
+                // 可能存在部分评论不在缓存中，已经过期被删除，这些评论 ID 需要提取出来，等会查数据库
+                List<Long> expiredCommentIds = Lists.newArrayList();
+                if (commentsJsonList != null) {
                     for (int i = 0; i < commentsJsonList.size(); i++) {
                         String commentJson = (String) commentsJsonList.get(i);
                         if (Objects.nonNull(commentJson)) {
@@ -219,27 +270,54 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
                             expiredCommentIds.add(Long.valueOf(commentIdList.get(i).toString()));
                         }
                     }
-
-                    // 对于不存在的一级评论，需要批量从数据库中查询，并添加到 commentRspVOS 中
-                    if (CollUtil.isNotEmpty(expiredCommentIds)) {
-                        List<CommentDO> commentDOS = commentDOMapper.selectByCommentIds(expiredCommentIds);
-                        getCommentDataAndSync2Redis(commentDOS, noteId, commentRspVOS);
-                    }
                 }
 
-                // 按热度值进行降序排列
-                commentRspVOS = commentRspVOS.stream()
-                        .sorted(Comparator.comparing(FindCommentItemRspVO::getHeat).reversed())
-                        .collect(Collectors.toList());
-
-                return PageResponse.success(commentRspVOS, pageNo, count, pageSize);
+                // 对于不存在的一级评论，需要批量从数据库中查询，并添加到 commentRspVOS 中
+                if (CollUtil.isNotEmpty(expiredCommentIds)) {
+                    List<CommentDO> commentDOS = commentDOMapper.selectByCommentIds(expiredCommentIds);
+                    getCommentDataAndSync2Redis(commentDOS, noteId, commentRspVOS);
+                }
             }
-            // 缓存中没有，则查询数据库
-            //查询一级评论
-            List<CommentDO> oneLevelCommentIds = commentDOMapper.selectPageList(noteId, offset, pageSize);
-            getCommentDataAndSync2Redis(oneLevelCommentIds, noteId, commentRspVOS);
+
+            // 按热度值进行降序排列
+            commentRspVOS = commentRspVOS.stream()
+                    .sorted(Comparator.comparing(FindCommentItemRspVO::getHeat).reversed())
+                    .collect(Collectors.toList());
+
+            // 异步将评论详情，同步到本地缓存
+            syncCommentDetail2LocalCache(commentRspVOS);
+
+            return PageResponse.success(commentRspVOS, pageNo, count, pageSize);
         }
+        // 缓存中没有，则查询数据库
+        //查询一级评论
+        List<CommentDO> oneLevelCommentIds = commentDOMapper.selectPageList(noteId, offset, pageSize);
+        getCommentDataAndSync2Redis(oneLevelCommentIds, noteId, commentRspVOS);
+
+        // 异步将评论详情，同步到本地缓存
+        syncCommentDetail2LocalCache(commentRspVOS);
+
         return PageResponse.success(commentRspVOS, pageNo, count, pageSize);
+    }
+
+    /**
+     * 同步评论详情到本地缓存中
+     *
+     * @param commentRspVOS 评论VO列表
+     */
+    private void syncCommentDetail2LocalCache(List<FindCommentItemRspVO> commentRspVOS) {
+        // 开启一个异步线程
+        threadPoolTaskExecutor.execute(() -> {
+            // 构建缓存所需的键值
+            Map<Long, String> localCacheData = Maps.newHashMap();
+            commentRspVOS.forEach(commentRspVO -> {
+                Long commentId = commentRspVO.getCommentId();
+                localCacheData.put(commentId, JsonUtils.toJsonString(commentRspVO));
+            });
+
+            // 批量写入本地缓存
+            LOCAL_CACHE.putAll(localCacheData);
+        });
     }
 
     /**
@@ -378,10 +456,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
 
 
                     // 批量写入并设置过期时间
-                    connection.setEx(
-                            redisTemplate.getStringSerializer().serialize(entry.getKey()),
+                    connection.stringCommands().setEx(
+                            Objects.requireNonNull(redisTemplate.getStringSerializer().serialize(entry.getKey())),
                             randomExpire,
-                            redisTemplate.getStringSerializer().serialize(jsonStr)
+                            Objects.requireNonNull(redisTemplate.getStringSerializer().serialize(jsonStr))
                     );
                 }
                 return null;
@@ -396,18 +474,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
      * @param dbCount             数据库查询到的笔记评论总数
      */
     private void syncNoteCommentTotal2Redis(String noteCommentTotalKey, Long dbCount) {
-        redisTemplate.executePipelined(new SessionCallback<>() {
-            @Override
-            public Object execute(RedisOperations operations) {
-                // 同步 hash 数据
-                operations.opsForHash().put(noteCommentTotalKey, RedisKeyConstants.FIELD_COMMENT_TOTAL, dbCount);
+        // 同步 hash 数据
+        redisTemplate.opsForHash().put(noteCommentTotalKey, RedisKeyConstants.FIELD_COMMENT_TOTAL, dbCount);
 
-                // 随机过期时间 (保底1小时 + 随机时间)，单位：秒
-                long expireTime = 60 * 60 + RandomUtil.randomInt(4 * 60 * 60);
-                operations.expire(noteCommentTotalKey, expireTime, TimeUnit.SECONDS);
-                return null;
-            }
-        });
+        // 随机过期时间 (保底1小时 + 随机时间)，单位：秒
+        long expireTime = 60 * 60 + RandomUtil.randomInt(4 * 60 * 60);
+        redisTemplate.expire(noteCommentTotalKey, expireTime, TimeUnit.SECONDS);
     }
 
     /**
