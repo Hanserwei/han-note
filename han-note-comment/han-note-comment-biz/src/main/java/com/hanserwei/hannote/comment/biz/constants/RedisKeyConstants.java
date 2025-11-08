@@ -8,6 +8,11 @@ public class RedisKeyConstants {
     private static final String HAVE_FIRST_REPLY_COMMENT_KEY_PREFIX = "comment:havaFirstReplyCommentId:";
 
     /**
+     * Key 前缀：二级评论分页 ZSET
+     */
+    private static final String CHILD_COMMENT_LIST_KEY_PREFIX = "comment:childList:";
+
+    /**
      * Hash Field: 子评论总数
      */
     public static final String FIELD_CHILD_COMMENT_TOTAL = "childCommentTotal";
@@ -39,6 +44,16 @@ public class RedisKeyConstants {
      * Key 前缀：评论详情 JSON
      */
     private static final String COMMENT_DETAIL_KEY_PREFIX = "comment:detail:";
+
+    /**
+     * 构建子评论分页 ZSET 完整 KEY
+     *
+     * @param commentId 一级评论 ID
+     * @return 子评论分页 ZSET 完整 KEY
+     */
+    public static String buildChildCommentListKey(Long commentId) {
+        return CHILD_COMMENT_LIST_KEY_PREFIX + commentId;
+    }
 
     /**
      * 构建评论维度计数 Key

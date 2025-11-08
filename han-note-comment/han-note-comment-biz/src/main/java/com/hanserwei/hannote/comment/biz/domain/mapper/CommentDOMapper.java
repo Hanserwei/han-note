@@ -110,4 +110,14 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      * @return 计数数据
      */
     List<CommentDO> selectCommentCountByIds(@Param("commentIds") List<Long> commentIds);
+
+    /**
+     * 查询子评论
+     *
+     * @param parentId 一级评论 ID
+     * @param limit    子评论数量限制
+     * @return 子评论
+     */
+    List<CommentDO> selectChildCommentsByParentIdAndLimit(@Param("parentId") Long parentId,
+                                                          @Param("limit") int limit);
 }
