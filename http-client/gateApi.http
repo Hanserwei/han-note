@@ -329,3 +329,21 @@ Content-Type: application/json
     }
   ]
 }
+
+### 批量查询评论内容
+POST http://localhost:8084/kv/comment/content/batchFind
+Content-Type: application/json
+
+{
+  "noteId": 1862481582414102549,
+  "commentContentKeys": [
+    {
+      "yearMonth": "2025-11",
+      "contentId": "a2537301-dc80-4fd6-ab2f-a9a908baebba"
+    },
+    {
+      "yearMonth": "2025-11",
+      "contentId": "a66b06ce-bf45-4a21-a5f2-31e5fb5fb5eb"
+    }
+  ]
+}
