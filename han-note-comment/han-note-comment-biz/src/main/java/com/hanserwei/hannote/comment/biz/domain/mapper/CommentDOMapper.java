@@ -120,4 +120,29 @@ public interface CommentDOMapper extends BaseMapper<CommentDO> {
      */
     List<CommentDO> selectChildCommentsByParentIdAndLimit(@Param("parentId") Long parentId,
                                                           @Param("limit") int limit);
+
+    /**
+     * 删除一级评论下，所有二级评论
+     *
+     * @param commentId 一级评论 ID
+     * @return 删除数量
+     */
+    int deleteByParentId(Long commentId);
+
+    /**
+     * 批量删除评论
+     *
+     * @param commentIds 评论 ID 列表
+     * @return 删除数量
+     */
+    int deleteByIds(@Param("commentIds") List<Long> commentIds);
+
+
+    /**
+     * 根据 reply_comment_id 查询
+     *
+     * @param commentId 回复的评论 ID
+     * @return 评论
+     */
+    CommentDO selectByReplyCommentId(Long commentId);
 }

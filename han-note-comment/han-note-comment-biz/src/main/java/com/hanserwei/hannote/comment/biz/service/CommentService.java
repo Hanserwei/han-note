@@ -54,4 +54,11 @@ public interface CommentService extends IService<CommentDO> {
      * @return 响应
      */
     Response<?> deleteComment(DeleteCommentReqVO deleteCommentReqVO);
+
+    /**
+     * 删除本地评论缓存
+     *
+     * @param commentId 评论ID
+     */
+    void deleteCommentLocalCache(Long commentId);
 }
