@@ -6,14 +6,12 @@ import com.hanserwei.framework.common.constant.DateConstants;
 import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.comment.biz.model.bo.CommentBO;
 import com.hanserwei.hannote.kv.api.KeyValueFeignApi;
-import com.hanserwei.hannote.kv.dto.req.BatchAddCommentContentReqDTO;
-import com.hanserwei.hannote.kv.dto.req.BatchFindCommentContentReqDTO;
-import com.hanserwei.hannote.kv.dto.req.CommentContentReqDTO;
-import com.hanserwei.hannote.kv.dto.req.FindCommentContentReqDTO;
+import com.hanserwei.hannote.kv.dto.req.*;
 import com.hanserwei.hannote.kv.dto.resp.FindCommentContentRspDTO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,6 +77,31 @@ public class KeyValueRpcService {
         }
 
         return response.getData();
+    }
+
+    /**
+     * 删除评论内容
+     *
+     * @param noteId     笔记ID
+     * @param createTime 创建时间
+     * @param contentId  评论内容ID
+     * @return 是否成功
+     */
+    public boolean deleteCommentContent(Long noteId, LocalDateTime createTime, String contentId) {
+        DeleteCommentContentReqDTO deleteCommentContentReqDTO = DeleteCommentContentReqDTO.builder()
+                .noteId(noteId)
+                .yearMonth(DateConstants.DATE_FORMAT_Y_M.format(createTime))
+                .contentId(contentId)
+                .build();
+
+        // 调用 KV 存储服务
+        Response<?> response = keyValueFeignApi.deleteCommentContent(deleteCommentContentReqDTO);
+
+        if (!response.isSuccess()) {
+            throw new RuntimeException("删除评论内容失败");
+        }
+
+        return true;
     }
 
 }

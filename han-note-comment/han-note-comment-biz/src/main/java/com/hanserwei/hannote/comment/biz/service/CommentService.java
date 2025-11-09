@@ -46,4 +46,12 @@ public interface CommentService extends IService<CommentDO> {
      * @return 响应
      */
     Response<?> unlikeComment(UnLikeCommentReqVO unLikeCommentReqVO);
+
+    /**
+     * 删除评论
+     *
+     * @param deleteCommentReqVO 删除评论请求
+     * @return 响应
+     */
+    Response<?> deleteComment(DeleteCommentReqVO deleteCommentReqVO);
 }

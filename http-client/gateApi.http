@@ -394,3 +394,12 @@ Content-Type: application/json
   "yearMonth": "2025-11",
   "contentId": "0fa4376f-a098-4fee-821b-f5b7e627a72c"
 }
+
+### 删除评论,同步删除一切相关缓存
+POST http://localhost:8000/comment/comment/delete
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "commentId": 8001
+}
