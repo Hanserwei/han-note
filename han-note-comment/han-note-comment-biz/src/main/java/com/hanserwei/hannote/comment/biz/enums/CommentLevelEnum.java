@@ -3,8 +3,6 @@ package com.hanserwei.hannote.comment.biz.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Objects;
-
 @Getter
 @AllArgsConstructor
 public enum CommentLevelEnum {
@@ -15,20 +13,5 @@ public enum CommentLevelEnum {
     ;
 
     private final Integer code;
-
-    /**
-     * 根据类型 code 获取对应的枚举
-     *
-     * @param code 类型 code
-     * @return 枚举
-     */
-    public static CommentLevelEnum valueOf(Integer code) {
-        for (CommentLevelEnum commentLevelEnum : CommentLevelEnum.values()) {
-            if (Objects.equals(code, commentLevelEnum.getCode())) {
-                return commentLevelEnum;
-            }
-        }
-        return null;
-    }
 
 }

@@ -718,11 +718,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDOMapper, CommentDO> 
         return Response.success();
     }
 
-    @Override
-    public void deleteCommentLocalCache(Long commentId) {
-        LOCAL_CACHE.invalidate(commentId);
-    }
-
     /**
      * 初始化评论点赞布隆过滤器
      *
