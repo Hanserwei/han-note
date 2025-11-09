@@ -5,6 +5,7 @@ import com.hanserwei.framework.common.response.Response;
 import com.hanserwei.hannote.kv.biz.service.CommentContentService;
 import com.hanserwei.hannote.kv.dto.req.BatchAddCommentContentReqDTO;
 import com.hanserwei.hannote.kv.dto.req.BatchFindCommentContentReqDTO;
+import com.hanserwei.hannote.kv.dto.req.DeleteCommentContentReqDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +32,12 @@ public class CommentContentController {
     @ApiOperationLog(description = "批量查询评论内容")
     public Response<?> batchFindCommentContent(@Validated @RequestBody BatchFindCommentContentReqDTO batchFindCommentContentReqDTO) {
         return commentContentService.batchFindCommentContent(batchFindCommentContentReqDTO);
+    }
+
+    @PostMapping(value = "/comment/content/delete")
+    @ApiOperationLog(description = "删除评论内容")
+    public Response<?> deleteCommentContent(@Validated @RequestBody DeleteCommentContentReqDTO deleteCommentContentReqDTO) {
+        return commentContentService.deleteCommentContent(deleteCommentContentReqDTO);
     }
 
 }

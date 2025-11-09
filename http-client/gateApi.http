@@ -384,3 +384,13 @@ Authorization: Bearer {{token}}
 {
   "commentId": 8001
 }
+
+### 删除评论
+POST http://localhost:8084/kv/comment/content/delete
+Content-Type: application/json
+
+{
+  "noteId": 1862481582414102549,
+  "yearMonth": "2025-11",
+  "contentId": "0fa4376f-a098-4fee-821b-f5b7e627a72c"
+}
