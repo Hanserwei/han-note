@@ -202,16 +202,16 @@ Content-Type: application/json
 Authorization: Bearer {{thirdToken}}
 
 {
-  "id": 1981698494959714362
+  "id": 1985254482941837349
 }
 
 ### 笔记取消点赞入口
 POST http://localhost:8000/note/note/unlike
 Content-Type: application/json
-Authorization: Bearer {{otherToken}}
+Authorization: Bearer {{thirdToken}}
 
 {
-  "id": 1977249693272375330
+  "id": 1985254482941837349
 }
 
 ### 笔记收藏入口

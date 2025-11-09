@@ -9,6 +9,7 @@
       <w>mget</w>
       <w>nacos</w>
       <w>operationlog</w>
+      <w>rbitmap</w>
       <w>rustfs</w>
       <w>zadd</w>
       <w>zrevrangebyscore</w>
