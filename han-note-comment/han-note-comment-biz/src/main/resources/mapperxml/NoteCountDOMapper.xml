@@ -20,4 +20,10 @@
         from t_note_count
         where note_id = #{noteId}
     </select>
+
+    <update id="updateCommentTotalByNoteId" parameterType="map">
+        update t_note_count
+        set comment_total = comment_total + #{count}
+        where note_id = #{noteId}
+    </update>
 </mapper>
